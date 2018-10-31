@@ -34,10 +34,11 @@ class Routes extends React.Component<Props> {
 
     for (let y = 0; y < map.height; y++) {
       for (let x = 0; x < map.width; x++) {
+        const enemy = enemies.at({x, y});
         if (x === this.props.pos.x && y === this.props.pos.y) {
           grid[y][x] = '@';
-        } else if (enemies.at({x, y})) {
-          grid[y][x] = 'g';
+        } else if (enemy) {
+          grid[y][x] = enemy.render();
         } else {
           grid[y][x] = map.at(x, y);
         }
@@ -105,7 +106,18 @@ const Root = () => (
   <Provider store={store}>
     <React.StrictMode>
       <App/>
-      <p>Blood/hit effects, </p>
+      <div style={{ width: '400px' }}>
+        <h3>Story</h3>
+        <p>
+          The dwarven homelands were attacked by evil forces. To save your home you traveled to the chaos dimension of
+          Limbo to find the legendary <i>Axe of Doom</i>. You didn't find the axe, instead you got caught in a chaos
+          storm. You were caught in one long month and the chaos energy changed and twisted your form
+          beyond recognition. Now you must return and save homelands before it's too late.
+        </p>
+        <p>You are MechaDwarf. Half machine, half dwarf!</p>
+        <h3>Features</h3>
+        <p>Blood/hit effects, batteries, oil</p>
+      </div>
     </React.StrictMode>
   </Provider>
 );
