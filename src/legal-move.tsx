@@ -1,6 +1,8 @@
 import { map } from './map';
 
-export const legalMove : boolean = (x: number, y: number) => {
+type LegalMove = (x: number, y: number) => boolean;
+
+export const legalMove: LegalMove = (x, y) => {
   const terrain = map.at(x, y);
   switch (terrain) {
     case ' ': return false;
@@ -9,5 +11,6 @@ export const legalMove : boolean = (x: number, y: number) => {
 
     case '.': return true;
     case '#': return true;
+    default: return false;
   }
 };

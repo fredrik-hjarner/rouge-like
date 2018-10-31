@@ -15,7 +15,8 @@
       "linebreak-style": [true, "LF"],
       "ordered-imports": false,
       "eofline": false,
-      "max-line-length": false
+      "max-line-length": false,
+      "no-unused-expression": false
     },
     "rulesDirectory": []
 }

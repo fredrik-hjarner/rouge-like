@@ -7,6 +7,8 @@ import 'semantic-ui-css/semantic.min.css';
 import { StoreManager } from 'redux/store';
 import { AbilityScoreModule } from 'redux/modules';
 import { map } from './map';
+import { legalMove } from './legal-move';
+import enemies from './enemies';
 import 'styles/global';
 
 const store = StoreManager.createStore();
@@ -34,6 +36,8 @@ class Routes extends React.Component<Props> {
       for (let x = 0; x < map.width; x++) {
         if (x === this.props.pos.x && y === this.props.pos.y) {
           grid[y][x] = '@';
+        } else if (enemies.at({x, y})) {
+          grid[y][x] = 'g';
         } else {
           grid[y][x] = map.at(x, y);
         }
@@ -53,27 +57,33 @@ class Routes extends React.Component<Props> {
     );
   }
 
+  private move(pos: { x: number, y: number }) {
+    if (legalMove(pos.x, pos.y)) {
+      this.props.setPosition(pos);
+    }
+  }
+
   private keyup = (event: KeyboardEvent) => {
     const { type } = event;
-    const { setPosition } = this.props;
+    const { x, y } = this.props.pos;
     switch (event.code) {
       case 'Numpad4':
-        type === 'keyup' && setPosition({ x: this.props.pos.x - 1 }); // tslint:disable-line
+        type === 'keyup' && this.move({ x: x - 1, y }); // tslint:disable-line
         event.preventDefault();
         event.stopPropagation();
         break;
       case 'Numpad8':
-        type === 'keyup' && setPosition({ y: this.props.pos.y - 1 }); // tslint:disable-line
+        type === 'keyup' && this.move({ x, y: y - 1 }); // tslint:disable-line
         event.preventDefault();
         event.stopPropagation();
         break;
       case 'Numpad6':
-        type === 'keyup' && setPosition({ x: this.props.pos.x + 1 }); // tslint:disable-line
+        type === 'keyup' && this.move({ x: x + 1, y }); // tslint:disable-line
         event.preventDefault();
         event.stopPropagation();
         break;
       case 'Numpad2':
-        type === 'keyup' && setPosition({ y: this.props.pos.y + 1 }); // tslint:disable-line
+        type === 'keyup' && this.move({ x, y: y + 1 }); // tslint:disable-line
         event.preventDefault();
         event.stopPropagation();
         break;
@@ -95,6 +105,7 @@ const Root = () => (
   <Provider store={store}>
     <React.StrictMode>
       <App/>
+      <p>Blood/hit effects, </p>
     </React.StrictMode>
   </Provider>
 );
