@@ -1,27 +1,18 @@
-export type AbilityScoreAction = { type: 'update-ability-scores', payload: AbilityScoreState };
+export type AbilityScoreAction = { type: 'set-position', payload: AbilityScoreState };
 
 export type AbilityScoreState = {
-  charisma: number,
-  constitution: number,
-  dexterity: number,
-  intelligence: number,
-  strength: number,
-  wisdom: number,
+  x: number, y: number,
 };
 
 export class AbilityScoreModule {
   public static initialState: AbilityScoreState = {
-    charisma: 0,
-    constitution: 0,
-    dexterity: 0,
-    intelligence: 0,
-    strength: 0,
-    wisdom: 0,
+    x: 3,
+    y: 2,
   };
 
   public static reducer(state: AbilityScoreState = AbilityScoreModule.initialState, action: AbilityScoreAction): AbilityScoreState {
     switch (action.type) {
-      case 'update-ability-scores':
+      case 'set-position':
         return {
           ...state,
           ...action.payload,
@@ -31,7 +22,11 @@ export class AbilityScoreModule {
     }
   }
 
-  public static updateAbilityScores(abilityScores: AbilityScoreState): AbilityScoreAction {
-    return { type: 'update-ability-scores', payload: abilityScores };
+  public static setPosition(abilityScores: AbilityScoreState): AbilityScoreAction {
+    return { type: 'set-position', payload: abilityScores };
+  }
+
+  public static getPosition(state: any): {x: number, y: number} {
+    return state.abilityScores;
   }
 }
