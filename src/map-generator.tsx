@@ -4,9 +4,12 @@ import { Pos } from 'types';
 import { Matrix } from 'utils';
 
 const mapSize = { x: 77, y: 19};
-const numberOfRooms = 4;
+const numberOfRooms = 25;
 const minRoomDimension = 4;
-const maxRoomDimension = 20;
+const maxRoomDimensions = {
+  x: 20,
+  y: 10,
+};
 const highestStartX = mapSize.x - 1 - minRoomDimension;
 const highestStartY = mapSize.y - 1 - minRoomDimension;
 
@@ -43,8 +46,8 @@ export class MapGenerator {
   })
 
   private randomizeEndPos = (startPos: Pos, roomLeft: Pos) => ({
-    x: startPos.x + random(minRoomDimension, Math.min(maxRoomDimension, roomLeft.x)),
-    y: startPos.y + random(minRoomDimension, Math.min(maxRoomDimension, roomLeft.y)),
+    x: startPos.x + random(minRoomDimension, Math.min(maxRoomDimensions.x, roomLeft.x)),
+    y: startPos.y + random(minRoomDimension, Math.min(maxRoomDimensions.y, roomLeft.y)),
   })
 
   private isFree = (pos: Pos) => !this.grid.get(pos.x, pos.y);
