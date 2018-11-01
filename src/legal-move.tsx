@@ -1,4 +1,4 @@
-import { map } from './map';
+import { map } from './maps/level2';
 
 type LegalMove = (x: number, y: number) => boolean;
 

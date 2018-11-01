@@ -6,7 +6,7 @@ import 'semantic-ui-css/semantic.min.css';
 
 import { StoreManager } from 'redux/store';
 import { AbilityScoreModule } from 'redux/modules';
-import { map } from './map';
+import { map } from './maps/level2';
 import { legalMove } from './legal-move';
 import enemies from './enemies';
 import 'styles/global';

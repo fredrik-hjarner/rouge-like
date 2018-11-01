@@ -18,4 +18,8 @@ export class Goblin implements Enemy {
       </span>
     );
   }
+
+  public AI() {
+    return;
+  }
 }

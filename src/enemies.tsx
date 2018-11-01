@@ -2,7 +2,7 @@ import { random, uniq, cloneDeep } from 'lodash';
 
 import { Pos } from 'types';
 import { legalMove } from 'legal-move';
-import { map } from './map';
+import { map } from './maps/level1';
 import { Enemy } from './enemies/enemy';
 import { Goblin } from './enemies/goblin';
 
@@ -22,6 +22,10 @@ class Enemies {
 
   public at(pos: Pos): Enemy | undefined {
     return this.enemies.find(e => e.pos.x === pos.x && e.pos.y === pos.y);
+  }
+
+  public AI() {
+    this.enemies.forEach(e => e.AI());
   }
 
   private spawn() {
