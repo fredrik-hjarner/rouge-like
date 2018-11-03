@@ -14,7 +14,7 @@ class Map {
   public at(x: number, y: number): string {
     switch (this.map.get(x, y)) {
       case 1: return '.';
-      case 2: return '_';
+      case 2: return '−';
       case 3: return '|';
       default: return ' ';
     }

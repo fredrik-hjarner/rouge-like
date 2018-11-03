@@ -6,7 +6,7 @@ export const legalMove: LegalMove = (x, y) => {
   const terrain = map.at(x, y);
   switch (terrain) {
     case ' ': return false;
-    case '_': return false;
+    case '−': return false;
     case '|': return false;
 
     case '.': return true;

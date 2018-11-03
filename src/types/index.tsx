@@ -22,3 +22,5 @@ export interface IMatrix {
   set: (x: number, y: number, value: any) => void;
   setAll: (value: any) => void;
 }
+
+export type mapTile = 'solid-stone' | 'floor' | 'vertical-wall' | 'horizontal-wall';
