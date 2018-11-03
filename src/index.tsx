@@ -9,6 +9,7 @@ import { AbilityScoreModule } from 'redux/modules';
 import { map } from './maps/level2';
 import { legalMove } from './legal-move';
 import enemies from './enemies';
+import mapTileToJSX from './map-tile-to-jsx';
 import 'styles/global';
 
 const store = StoreManager.createStore();
@@ -40,7 +41,7 @@ class Routes extends React.Component<Props> {
         } else if (enemy) {
           grid[y][x] = enemy.render();
         } else {
-          grid[y][x] = map.at(x, y);
+          grid[y][x] = mapTileToJSX(map.at(x, y));
         }
       }
     }

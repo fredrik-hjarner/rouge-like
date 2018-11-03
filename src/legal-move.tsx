@@ -5,12 +5,10 @@ type LegalMove = (x: number, y: number) => boolean;
 export const legalMove: LegalMove = (x, y) => {
   const terrain = map.at(x, y);
   switch (terrain) {
-    case ' ': return false;
-    case '−': return false;
-    case '|': return false;
+    case 'solid-stone': return false;
+    case 'horizontal-wall': return false;
+    case 'vertical-wall': return false;
 
-    case '.': return true;
-    case '#': return true;
-    default: return false;
+    case 'floor': return true;
   }
 };
