@@ -12,7 +12,12 @@ class Map {
   }
 
   public at(x: number, y: number): string {
-    return this.map.get(x, y) ? '.' : ' ';
+    switch (this.map.get(x, y)) {
+      case 1: return '.';
+      case 2: return '_';
+      case 3: return '|';
+      default: return ' ';
+    }
   }
 }
 
