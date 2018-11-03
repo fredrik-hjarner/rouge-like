@@ -1,18 +1,18 @@
-import { MapGenerator } from 'map-generator';
+import { IMatrix } from 'types';
+import { generateMap } from 'map-generator';
 
 class Map {
   public width = 77;
   public height = 19;
 
-  private gen: MapGenerator;
+  private map: IMatrix;
 
   constructor() {
-    this.gen = new MapGenerator();
-    this.gen.generate();
+    this.map = generateMap();
   }
 
   public at(x: number, y: number): string {
-    return this.gen.at(x, y) ? '.' : ' ';
+    return this.map.get(x, y) ? '.' : ' ';
   }
 }
 

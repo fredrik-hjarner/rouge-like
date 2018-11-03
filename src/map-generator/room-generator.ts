@@ -1,6 +1,6 @@
 import { random } from 'lodash';
 
-import { Pos } from 'types';
+import { Pos, Rectangle } from 'types';
 import { Matrix } from 'utils';
 
 const mapSize = { x: 77, y: 19};
@@ -13,17 +13,17 @@ const maxRoomDimensions = {
 const highestStartX = mapSize.x - 1 - minRoomDimension;
 const highestStartY = mapSize.y - 1 - minRoomDimension;
 
-export class MapGenerator {
+/**
+ * This actually could probably be just a function.
+ *
+ * Best would be to use the 'function' key word so that order is irrelevant.
+ */
+export class RoomGenerator {
   private grid: Matrix;
-  private rooms: any[] = []; // beter type
-
-  constructor() {
-    this.grid = new Matrix(mapSize.x, mapSize.y, 0);
-  }
+  private rooms: Rectangle[] = [];
 
   public generate = () => {
-    this.grid = new Matrix(mapSize.x, mapSize.y, 0);
-
+    this.reset();
     for (let i = 0; i < numberOfRooms; i++) {
       // pick starting position
       const startPos = this.randomStartPos();
@@ -31,13 +31,12 @@ export class MapGenerator {
       const endPos = this.randomizeEndPos(startPos, roomLeft);
       this.createRoom(startPos, endPos);
     }
+    return this.rooms;
   }
 
-  public at = (x: number, y: number) => this.grid.get(x, y); // TODO: remove this func?
-
   private spaceLeft = (startPos: Pos) => ({
-    x: mapSize.x - startPos.x,
-    y: mapSize.y - startPos.y,
+    x: mapSize.x - startPos.x - 1,
+    y: mapSize.y - startPos.y - 1,
   })
 
   private randomStartPos: () => Pos = () => ({
@@ -45,10 +44,22 @@ export class MapGenerator {
     y: random(0, highestStartY),
   })
 
-  private randomizeEndPos = (startPos: Pos, roomLeft: Pos) => ({
-    x: startPos.x + random(minRoomDimension, Math.min(maxRoomDimensions.x, roomLeft.x)),
-    y: startPos.y + random(minRoomDimension, Math.min(maxRoomDimensions.y, roomLeft.y)),
-  })
+  private randomizeEndPos = (startPos: Pos, roomLeft: Pos) => {
+    const endPos = {
+      x: startPos.x + random(minRoomDimension, Math.min(maxRoomDimensions.x - 1, roomLeft.x)),
+      y: startPos.y + random(minRoomDimension, Math.min(maxRoomDimensions.y - 1, roomLeft.y)),
+    };
+    // Validation
+    if (endPos.x < 0 || endPos.x >= mapSize.x) {
+      debugger; // tslint:disable-line
+      throw new Error(`endPos.x is out of bounds. endPos.x: ${endPos.x}, mapSize.x: ${mapSize.x}`);
+    }
+    if (endPos.y < 0 || endPos.y >= mapSize.y) {
+      debugger; // tslint:disable-line
+      throw new Error(`endPos.y is out of bounds. endPos.y: ${endPos.y}, mapSize.y: ${mapSize.y}`);
+    }
+    return endPos;
+  }
 
   private isFree = (pos: Pos) => !this.grid.get(pos.x, pos.y);
 
@@ -69,6 +80,16 @@ export class MapGenerator {
         this.grid.set(x, y, 1);
       }
     }
-    this.rooms.push({startPos, endPos});
+    this.rooms.push({
+      x1: startPos.x,
+      x2: endPos.x,
+      y1: startPos.y,
+      y2: endPos.y,
+    });
+  }
+
+  private reset() {
+    this.grid = new Matrix(mapSize.x, mapSize.y, 0);
+    this.rooms = [];
   }
 }
