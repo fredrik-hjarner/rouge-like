@@ -4,15 +4,13 @@ import { Provider } from 'react-redux';
 import { connect } from 'react-redux';
 import 'semantic-ui-css/semantic.min.css';
 
-import { StoreManager } from 'redux/store';
+import store from 'redux/store';
 import { AbilityScoreModule } from 'redux/modules';
 import { map } from './maps/level2';
 import { legalMove } from './legal-move';
 import enemies from './enemies';
 import mapTileToJSX from './map-tile-to-jsx';
 import 'styles/global';
-
-const store = StoreManager.createStore();
 
 type Props = {
   pos: { x: number, y: number }, // TODO: better type
@@ -71,6 +69,7 @@ class Routes extends React.Component<Props> {
     switch (event.code) {
       case 'Numpad4':
         type === 'keyup' && this.move({ x: x - 1, y }); // tslint:disable-line
+        type === 'keyup' && store.dispatch({ type: 'PING' }); // TODO: remove // tslint:disable-line
         event.preventDefault();
         event.stopPropagation();
         break;
