@@ -1,5 +1,5 @@
 import { IMatrix, MapTile } from 'types';
-import { generateMap } from 'map-generator';
+import { generateMap } from './map-generation';
 
 class Map {
   public width = 77;
