@@ -1,21 +1,13 @@
 import { createStore, combineReducers, applyMiddleware, compose } from 'redux';
-import { createEpicMiddleware, combineEpics, ofType } from 'redux-observable';
-import { delay, mapTo } from 'rxjs/operators';
+import { createEpicMiddleware, combineEpics } from 'redux-observable';
 
 import {
-  AbilityScoreModule, AbilityScoreState,
+  PlayerModule, PlayerState, playerEpics,
 } from './modules';
 
 export interface State {
-  abilityScores: AbilityScoreState;
+  player: PlayerState;
 }
-
-// TODO: remove
-const pingEpic = (action$: any) => action$.pipe(
-  ofType('PING'),
-  delay(1000), // Asynchronously wait 1000ms then continue
-  mapTo({ type: 'PONG' }),
-);
 
 let composeEnhancers = compose;
 
@@ -25,13 +17,13 @@ if (typeof (window as any).__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ === 'function') 
 }
 
 const rootReducer = combineReducers({
-  abilityScores: AbilityScoreModule.reducer,
+  player: PlayerModule.reducer,
 });
 
 const epicMiddleware = createEpicMiddleware();
 
 const rootEpic = combineEpics(
-  pingEpic,
+  playerEpics,
 );
 
 const reducer = rootReducer;

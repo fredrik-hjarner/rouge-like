@@ -13,7 +13,7 @@ class Enemies {
   constructor() {
     for (let y = 0; y < map.height; y++) {
       for (let x = 0; x < map.width; x++) {
-        legalMove(x, y) && this.spawnablePositions.push({ x, y });
+        legalMove({x, y}) && this.spawnablePositions.push({ x, y });
       }
     }
 

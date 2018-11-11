@@ -1,8 +1,7 @@
 import { map } from './maps/level2';
+import { Pos } from 'types';
 
-type LegalMove = (x: number, y: number) => boolean;
-
-export const legalMove: LegalMove = (x, y) => {
+export const legalMove = ({x, y}: Pos): boolean => {
   const terrain = map.at(x, y);
   switch (terrain) {
     case 'solid-stone': return false;

@@ -5,16 +5,16 @@ import { connect } from 'react-redux';
 import 'semantic-ui-css/semantic.min.css';
 
 import store from 'redux/store';
-import { AbilityScoreModule } from 'redux/modules';
+import { PlayerModule } from 'redux/modules';
+import { Pos, Direction } from 'types';
 import { map } from './maps/level2';
-import { legalMove } from './legal-move';
 import enemies from './enemies';
 import mapTileToJSX from './map-tile-to-jsx';
 import 'styles/global';
 
 type Props = {
-  pos: { x: number, y: number }, // TODO: better type
-  setPosition: any, // TODO: better type
+  pos: Pos,
+  move: (direction: Direction) => void,
 };
 
 class Routes extends React.Component<Props> {
@@ -57,34 +57,26 @@ class Routes extends React.Component<Props> {
     );
   }
 
-  private move(pos: { x: number, y: number }) {
-    if (legalMove(pos.x, pos.y)) {
-      this.props.setPosition(pos);
-    }
-  }
-
   private keyup = (event: KeyboardEvent) => {
     const { type } = event;
-    const { x, y } = this.props.pos;
     switch (event.code) {
       case 'Numpad4':
-        type === 'keyup' && this.move({ x: x - 1, y }); // tslint:disable-line
-        type === 'keyup' && store.dispatch({ type: 'PING' }); // TODO: remove // tslint:disable-line
+        type === 'keyup' && this.props.move('WEST'); // tslint:disable-line
         event.preventDefault();
         event.stopPropagation();
         break;
       case 'Numpad8':
-        type === 'keyup' && this.move({ x, y: y - 1 }); // tslint:disable-line
+        type === 'keyup' && this.props.move('NORTH'); // tslint:disable-line
         event.preventDefault();
         event.stopPropagation();
         break;
       case 'Numpad6':
-        type === 'keyup' && this.move({ x: x + 1, y }); // tslint:disable-line
+        type === 'keyup' && this.props.move('EAST'); // tslint:disable-line
         event.preventDefault();
         event.stopPropagation();
         break;
       case 'Numpad2':
-        type === 'keyup' && this.move({ x, y: y + 1 }); // tslint:disable-line
+        type === 'keyup' && this.props.move('SOUTH'); // tslint:disable-line
         event.preventDefault();
         event.stopPropagation();
         break;
@@ -93,14 +85,14 @@ class Routes extends React.Component<Props> {
 }
 
 const mapStateToProps = (state: any) => ({
-  pos: AbilityScoreModule.getPosition(state),
+  pos: PlayerModule.selectors.position(state),
 });
 
-const mapStateToDispatch = ({
-  setPosition: AbilityScoreModule.setPosition,
+const mapDispatchToProps = ({
+  move: PlayerModule.actions.move,
 });
 
-const App = connect(mapStateToProps, mapStateToDispatch)(Routes);
+const App = connect(mapStateToProps, mapDispatchToProps)(Routes as any);
 
 const Root = () => (
   <Provider store={store}>
@@ -122,4 +114,4 @@ const Root = () => (
   </Provider>
 );
 
-render(<Root/>, document.getElementById('react-root'));
+render(<Root/> as any, document.getElementById('react-root'));

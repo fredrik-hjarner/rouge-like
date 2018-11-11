@@ -24,3 +24,5 @@ export interface IMatrix {
 }
 
 export type MapTile = 'solid-stone' | 'floor' | 'vertical-wall' | 'horizontal-wall';
+
+export type Direction = 'WEST' | 'NORTH' | 'EAST' | 'SOUTH';
