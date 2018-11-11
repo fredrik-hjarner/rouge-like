@@ -1,6 +1,5 @@
 import { combineEpics, ofType } from 'redux-observable';
-import { empty } from 'rxjs';
-import { tap, delay, concatMap } from 'rxjs/operators';
+import { mapTo } from 'rxjs/operators';
 
 export type InitializeAction = { type: 'INITIALIZE' };
 
@@ -10,16 +9,17 @@ export class InitializeModule {
   };
 }
 
-const initEpic = (action$: any/* , state$: any */) => action$.pipe( // TODO: better type.
-  ofType('INITIALIZE'),
-  tap(() => console.log('3')),
-  delay(2000),
-  tap(() => console.log('2')),
-  delay(2000),
-  tap(() => console.log('1')),
-  concatMap(() => empty()),
-);
-
 export const initializeEpics = combineEpics(
-  initEpic,
+  (action$: any) => action$.pipe(
+    ofType('INITIALIZE'),
+    mapTo({ type: 'GEN_MAP' }),
+  ),
+  (action$: any) => action$.pipe(
+    ofType('GEN_MAP_FINISHED'),
+    mapTo({ type: 'SPAWN_ENEMIES' }),
+  ),
+  (action$: any) => action$.pipe(
+    ofType('SPAWN_ENEMIES_FINISHED'),
+    mapTo({ type: 'SPAWN_PLAYER' }),
+  ),
 );

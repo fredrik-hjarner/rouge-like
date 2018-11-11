@@ -1,19 +1,21 @@
 import { random, uniq, cloneDeep } from 'lodash';
 
 import { Pos } from 'types';
+import store from 'redux/store';
+import { mapSize } from 'constants/map';
 import { isWalkable } from 'legal-move';
-import { map } from './maps/level1';
 import { Enemy } from './enemies/enemy';
 import { Goblin } from './enemies/goblin';
+import { MapModule } from 'redux/modules';
 
 class Enemies {
   private spawnablePositions: Pos[] = [];
   private enemies: Enemy[] = [];
 
   constructor() {
-    for (let y = 0; y < map.height; y++) {
-      for (let x = 0; x < map.width; x++) {
-        isWalkable({x, y}) && this.spawnablePositions.push({ x, y });
+    for (let y = 0; y < mapSize.y; y++) {
+      for (let x = 0; x < mapSize.x; x++) {
+        isWalkable(MapModule.selectors.map(store.getState()), {x, y}) && this.spawnablePositions.push({ x, y });
       }
     }
 

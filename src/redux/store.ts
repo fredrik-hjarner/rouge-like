@@ -3,10 +3,12 @@ import { createEpicMiddleware, combineEpics } from 'redux-observable';
 
 import {
   initializeEpics,
+  MapModule, MapState, mapEpics,
   PlayerModule, PlayerState, playerEpics,
 } from './modules';
 
 export interface State {
+  map: MapState;
   player: PlayerState;
 }
 
@@ -18,6 +20,7 @@ if (typeof (window as any).__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ === 'function') 
 }
 
 const rootReducer = combineReducers({
+  map: MapModule.reducer,
   player: PlayerModule.reducer,
 });
 
@@ -25,6 +28,7 @@ const epicMiddleware = createEpicMiddleware();
 
 const rootEpic = combineEpics(
   initializeEpics,
+  mapEpics,
   playerEpics,
 );
 

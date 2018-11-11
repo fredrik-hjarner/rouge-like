@@ -2,8 +2,8 @@ import { random } from 'lodash';
 
 import { Pos, Rectangle } from 'types';
 import { Matrix } from 'utils';
+import { mapSize } from 'constants/map';
 
-const mapSize = { x: 77, y: 19};
 const numberOfRooms = 25;
 const minRoomDimension = 4;
 const maxRoomDimensions = {
@@ -89,7 +89,7 @@ export class RoomGenerator {
   }
 
   private reset() {
-    this.grid = new Matrix(mapSize.x, mapSize.y, 0);
+    this.grid = Matrix.create(mapSize.x, mapSize.y, 0);
     this.rooms = [];
   }
 }

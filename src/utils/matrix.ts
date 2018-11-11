@@ -1,18 +1,40 @@
-import { IMatrix } from 'types';
+import { cloneDeep } from 'lodash';
 
-export class Matrix implements IMatrix {
-  public readonly height: number;
-  public readonly width: number;
+export class Matrix {
+  public static fromTwoDimensionalArray(array: any[][]): Matrix {
+    const matrix = new Matrix();
+    matrix._height = array.length;
+    matrix._width = array[0].length;
+    matrix.matrix = cloneDeep(array);
+    return matrix;
+  }
+
+  public static create(x: number, y: number, initializedWithValue: any = 0): Matrix {
+    const matrix = new Matrix();
+    matrix.matrix = [];
+    for (let i = 0; i < y; i++) {
+      matrix.matrix.push(Array(x).fill(initializedWithValue));
+    }
+    matrix._width = x;
+    matrix._height = y;
+    return matrix;
+  }
+
+  private _height: number; // tslint:disable-line
+  private _width: number; // tslint:disable-line
+
+  public get height(): number {
+    return this._height;
+  }
+
+  public get width(): number {
+    return this._width;
+  }
 
   private matrix: any[][];
 
-  constructor(x: number, y: number, initializedWithValue: number = 0) {
-    this.matrix = [];
-    for (let i = 0; i < y; i++) {
-      this.matrix.push(Array(x).fill(initializedWithValue));
-    }
-    this.width = x;
-    this.height = y;
+  public toTwoDimensionalArray(): any[][] {
+    return cloneDeep(this.matrix);
   }
 
   public get(x: number, y: number) {

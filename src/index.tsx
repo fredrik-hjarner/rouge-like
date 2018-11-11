@@ -5,13 +5,13 @@ import 'semantic-ui-css/semantic.min.css';
 
 import store from 'redux/store';
 import { InitializeModule } from 'redux/modules';
-import { GameScreen } from 'view-layer';
+import GameScreenContainer from 'game-screen-container';
 import 'styles/global';
 
 const Root = () => (
   <Provider store={store}>
     <React.StrictMode>
-      <GameScreen/>
+      <GameScreenContainer/>
       <div style={{ width: '400px' }}>
         <h3>Story</h3>
         <p>

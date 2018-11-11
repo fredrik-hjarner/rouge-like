@@ -2,6 +2,7 @@ import { combineEpics, ofType } from 'redux-observable';
 import { of } from 'rxjs';
 import { concatMap } from 'rxjs/operators';
 
+import { MapModule } from 'redux/modules';
 import { Pos, Direction } from 'types';
 import { isWalkable } from 'legal-move';
 
@@ -61,7 +62,7 @@ const moveEpic = (action$: any, state$: any) => action$.pipe( // TODO: better ty
       case 'WEST':
       default: moveTo = { x: x - 1, y }; break;
     }
-    if (isWalkable(moveTo)) {
+    if (isWalkable(MapModule.selectors.map(state$.value), moveTo)) {
       return of(PlayerModule.actions.setPos(moveTo));
     }
     return of({ type: 'ILLEGAL_MOVE' });

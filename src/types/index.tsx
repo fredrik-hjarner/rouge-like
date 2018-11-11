@@ -10,19 +10,6 @@ export type Rectangle = {
   y2: number,
 };
 
-export interface IMatrix {
-  height: number;
-  width: number;
-
-  // constructor(x: number, y: number, initializedWithValue: number = 0) {
-  //   this.matrix = Array(y).fill(0).map(() => Array(x).fill(initializedWithValue));
-  // }
-
-  get: (x: number, y: number) => any;
-  set: (x: number, y: number, value: any) => void;
-  setAll: (value: any) => void;
-}
-
 export type MapTile = 'solid-stone' | 'floor' | 'vertical-wall' | 'horizontal-wall';
 
 export type Direction = 'WEST' | 'NORTH' | 'EAST' | 'SOUTH';
