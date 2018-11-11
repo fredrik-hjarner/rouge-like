@@ -3,7 +3,7 @@ import { of } from 'rxjs';
 import { concatMap } from 'rxjs/operators';
 
 import { Pos, Direction } from 'types';
-import { legalMove } from 'legal-move';
+import { isWalkable } from 'legal-move';
 
 type MoveAction = { type: 'MOVE', payload: { direction: Direction } };
 type SetPosAction = { type: 'SET_POS', payload: { pos: Pos } };
@@ -61,7 +61,7 @@ const moveEpic = (action$: any, state$: any) => action$.pipe( // TODO: better ty
       case 'WEST':
       default: moveTo = { x: x - 1, y }; break;
     }
-    if (legalMove(moveTo)) {
+    if (isWalkable(moveTo)) {
       return of(PlayerModule.actions.setPos(moveTo));
     }
     return of({ type: 'ILLEGAL_MOVE' });

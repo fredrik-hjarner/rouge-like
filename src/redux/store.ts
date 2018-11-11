@@ -2,6 +2,7 @@ import { createStore, combineReducers, applyMiddleware, compose } from 'redux';
 import { createEpicMiddleware, combineEpics } from 'redux-observable';
 
 import {
+  initializeEpics,
   PlayerModule, PlayerState, playerEpics,
 } from './modules';
 
@@ -23,6 +24,7 @@ const rootReducer = combineReducers({
 const epicMiddleware = createEpicMiddleware();
 
 const rootEpic = combineEpics(
+  initializeEpics,
   playerEpics,
 );
 

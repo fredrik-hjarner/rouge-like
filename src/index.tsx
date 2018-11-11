@@ -5,7 +5,7 @@ import { connect } from 'react-redux';
 import 'semantic-ui-css/semantic.min.css';
 
 import store from 'redux/store';
-import { PlayerModule } from 'redux/modules';
+import { PlayerModule, InitializeModule } from 'redux/modules';
 import { Pos, Direction } from 'types';
 import { map } from './maps/level2';
 import enemies from './enemies';
@@ -115,3 +115,5 @@ const Root = () => (
 );
 
 render(<Root/> as any, document.getElementById('react-root'));
+
+store.dispatch(InitializeModule.actions.initialize());

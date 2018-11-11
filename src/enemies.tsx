@@ -1,7 +1,7 @@
 import { random, uniq, cloneDeep } from 'lodash';
 
 import { Pos } from 'types';
-import { legalMove } from 'legal-move';
+import { isWalkable } from 'legal-move';
 import { map } from './maps/level1';
 import { Enemy } from './enemies/enemy';
 import { Goblin } from './enemies/goblin';
@@ -13,7 +13,7 @@ class Enemies {
   constructor() {
     for (let y = 0; y < map.height; y++) {
       for (let x = 0; x < map.width; x++) {
-        legalMove({x, y}) && this.spawnablePositions.push({ x, y });
+        isWalkable({x, y}) && this.spawnablePositions.push({ x, y });
       }
     }
 
