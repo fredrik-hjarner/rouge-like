@@ -2,12 +2,14 @@ import { createStore, combineReducers, applyMiddleware, compose } from 'redux';
 import { createEpicMiddleware, combineEpics } from 'redux-observable';
 
 import {
+  EnemiesModule, EnemiesState, enemiesEpics,
   initializeEpics,
   MapModule, MapState, mapEpics,
   PlayerModule, PlayerState, playerEpics,
 } from './modules';
 
 export interface State {
+  enemies: EnemiesState;
   map: MapState;
   player: PlayerState;
 }
@@ -20,6 +22,7 @@ if (typeof (window as any).__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ === 'function') 
 }
 
 const rootReducer = combineReducers({
+  enemies: EnemiesModule.reducer,
   map: MapModule.reducer,
   player: PlayerModule.reducer,
 });
@@ -27,6 +30,7 @@ const rootReducer = combineReducers({
 const epicMiddleware = createEpicMiddleware();
 
 const rootEpic = combineEpics(
+  enemiesEpics,
   initializeEpics,
   mapEpics,
   playerEpics,

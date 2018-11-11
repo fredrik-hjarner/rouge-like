@@ -6,7 +6,6 @@ import { PlayerModule, MapModule } from 'redux/modules';
 import { Pos } from 'types';
 import { mapSize } from 'constants/map';
 import { Matrix } from 'utils';
-import enemies from 'enemies';
 import mapTileToJSX from 'view-layer/map-tile-to-jsx';
 import 'styles/global';
 
@@ -22,11 +21,11 @@ class GameScreen extends React.Component<Props> {
 
     for (let y = 0; y < mapSize.y; y++) {
       for (let x = 0; x < mapSize.x; x++) {
-        const enemy = enemies.at({x, y});
+        // const enemy = enemies.at({x, y});
         if (x === this.props.pos.x && y === this.props.pos.y) {
           grid[y][x] = '@';
-        } else if (enemy) {
-          grid[y][x] = enemy.render();
+        // } else if (enemy) {
+          // grid[y][x] = enemy.render();
         } else {
           grid[y][x] = mapTileToJSX(map.get(x, y));
         }
