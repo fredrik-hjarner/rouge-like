@@ -2,30 +2,32 @@ import * as React from 'react';
 import { connect } from 'react-redux';
 import 'semantic-ui-css/semantic.min.css';
 
-import { PlayerModule, MapModule } from 'redux/modules';
+import { PlayerModule, MapModule, EnemiesModule } from 'redux/modules';
 import { Pos } from 'types';
 import { mapSize } from 'constants/map';
 import { Matrix } from 'utils';
-import mapTileToJSX from 'view-layer/map-tile-to-jsx';
+import mapTileToJSX from './map-tile-to-jsx';
+import enemyTypeToJSX from './enemy-type-to-jsx';
 import 'styles/global';
 
 type Props = {
   map: Matrix,
   pos: Pos,
+  enemies: Matrix,
 };
 
 class GameScreen extends React.Component<Props> {
   public render() {
-    const { map } = this.props;
+    const { map, enemies } = this.props;
     const grid = Array(mapSize.y).fill(0).map(() => Array(mapSize.x).fill('X'));
 
     for (let y = 0; y < mapSize.y; y++) {
       for (let x = 0; x < mapSize.x; x++) {
-        // const enemy = enemies.at({x, y});
+        const enemy = enemies.get(x, y);
         if (x === this.props.pos.x && y === this.props.pos.y) {
           grid[y][x] = '@';
-        // } else if (enemy) {
-          // grid[y][x] = enemy.render();
+        } else if (enemy) {
+          grid[y][x] = enemyTypeToJSX(enemy.type);
         } else {
           grid[y][x] = mapTileToJSX(map.get(x, y));
         }
@@ -69,6 +71,7 @@ class GameScreen extends React.Component<Props> {
 const mapStateToProps = (state: any) => ({
   map: MapModule.selectors.map(state),
   pos: PlayerModule.selectors.position(state),
+  enemies: EnemiesModule.selectors.enemiesAsMatrix(state),
 });
 
 export default connect(mapStateToProps)(GameScreen as any);
