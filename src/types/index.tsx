@@ -13,3 +13,5 @@ export type Rectangle = {
 export type MapTile = 'solid-stone' | 'floor' | 'vertical-wall' | 'horizontal-wall';
 
 export type Direction = 'WEST' | 'NORTH' | 'EAST' | 'SOUTH';
+
+export type EnemyType = 'GOBLIN';
