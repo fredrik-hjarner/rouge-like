@@ -1,14 +1,17 @@
 import * as uuid from 'uuid/v4';
-import { random } from 'lodash';
 import { put, take, all, select } from 'redux-saga/effects';
 
 import spawnEnemies from 'enemies/spawn-enemies';
 import { mapSize } from 'constants/map';
-import { Matrix } from 'utils';
-import { Direction } from 'types';
+import { Matrix, randomDirection } from 'utils';
 
-type SpawnEnemiesAction = { type: 'SPAWN_ENEMIES' };
-type SetEnemiesAction = { type: 'SET_ENEMIES', payload: { enemies: any } }; // TODO: better type
+export class EnemiesActionTypes {
+  public static readonly ENEMIES_SET_ENEMIES = 'ENEMIES:SET_ENEMIES';
+  public static readonly ENEMIES_SPAWN = 'ENEMIES:SPAWN';
+}
+
+type SpawnEnemiesAction = { type: 'ENEMIES:SPAWN' };
+type SetEnemiesAction = { type: 'ENEMIES:SET_ENEMIES', payload: { enemies: any } }; // TODO: better type
 
 export type EnemiesAction = SpawnEnemiesAction | SetEnemiesAction;
 
@@ -23,8 +26,8 @@ type State = {
 export class EnemiesModule {
   public static actions = {
     // TODO: better type
-    setEnemies: (enemies: any) => ({ type: 'SET_ENEMIES', payload: { enemies } }),
-    spawn: (): SpawnEnemiesAction => ({ type: 'SPAWN_ENEMIES' }),
+    setEnemies: (enemies: any) => ({ type: EnemiesActionTypes.ENEMIES_SET_ENEMIES, payload: { enemies } }),
+    spawn: (): SpawnEnemiesAction => ({ type: EnemiesActionTypes.ENEMIES_SPAWN }),
   };
 
   public static selectors = {
@@ -42,7 +45,7 @@ export class EnemiesModule {
 
   public static reducer(state: EnemiesState = EnemiesModule.initialState, action: EnemiesAction): EnemiesState {
     switch (action.type) {
-      case 'SET_ENEMIES':
+      case EnemiesActionTypes.ENEMIES_SET_ENEMIES:
         return {
           ...state,
           enemies: action.payload.enemies,
@@ -60,17 +63,9 @@ export class EnemiesModule {
 // TODO: use action creators and constants.
 function* runEnemyAISaga() {
   while (true) {
-    const action = yield take('RUN_ENEMY_AI');
+    const action = yield take('ENEMY:RUN_AI');
     const { id } = action.payload;
-    const r = random(1, 4);
-    let direction: Direction;
-    switch (r) {
-      case 1: direction = 'EAST'; break;
-      case 2: direction = 'NORTH'; break;
-      case 3: direction = 'SOUTH'; break;
-      case 4:
-      default: direction = 'WEST'; break;
-    }
+    const direction = randomDirection();
     yield put({ type: 'ENEMY:MOVE', payload: { id, direction } });
   }
 }
@@ -78,7 +73,7 @@ function* runEnemyAISaga() {
 // TODO: use action creators and constants.
 function* spawnEnemiesSaga() {
   while (true) {
-    yield take('SPAWN_ENEMIES');
+    yield take(EnemiesActionTypes.ENEMIES_SPAWN);
     const enemies = spawnEnemies().reduce(
       (acc, enemy) => {
         const id = uuid();
@@ -96,13 +91,13 @@ function* spawnEnemiesSaga() {
 
 function* runAllEnemyAISaga() {
   while (true) {
-    yield take('RUN_ALL_ENEMY_AI');
+    yield take('ENEMIES:RUN_AI');
     const enemiesArray = yield select(EnemiesModule.selectors.enemiesAsArray);
-    const actions = enemiesArray.map((enemy: any) => ({ type: 'RUN_ENEMY_AI', payload: { id: enemy.id } }));
+    const actions = enemiesArray.map((enemy: any) => ({ type: 'ENEMY:RUN_AI', payload: { id: enemy.id } }));
     for (let i = 0; i < actions.length; i++) { // tslint:disable-line
       yield put(actions[i]);
     }
-    yield put({ type: 'RUN_ALL_ENEMY_AI_FINISHED' });
+    yield put({ type: 'ENEMIES:RUN_AI_FINISHED' });
   }
 }
 

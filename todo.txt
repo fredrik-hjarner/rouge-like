@@ -1,0 +1,4 @@
+Saker som är awesome med Redux-Saga:
+  * yield put('SOME_ACTION_TYPE')
+      är awesome för att redux-saga kastar tillbaka kontrollen när dispatch har körts, och dispatch kör reducern
+      SYNKRONT. Med andra ord, så har reducern körts när saga:n återigen får kontroll.

@@ -66,10 +66,9 @@ function* moveSaga() {
     const map = yield select(MapModule.selectors.map);
     if (isWalkable(map, moveTo)) {
       yield put(PlayerModule.actions.setPos(moveTo));
-      yield put({ type: 'RUN_ALL_ENEMY_AI'});
     }
     yield put({ type: 'ILLEGAL_MOVE' });
-    yield put({ type: 'RUN_ALL_ENEMY_AI'});
+    yield put({ type: 'PLAYER:MOVE-FINISHED' });
   }
 }
 

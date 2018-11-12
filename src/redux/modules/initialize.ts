@@ -1,5 +1,7 @@
 import { put, take } from 'redux-saga/effects';
 
+import { EnemiesModule } from './enemies';
+
 export type InitializeAction = { type: 'INITIALIZE' };
 
 export class InitializeModule {
@@ -18,7 +20,7 @@ export function* initializeSaga() {
     yield put({ type: 'SPAWN_PLAYER' });
 
     yield take('SPAWN_PLAYER_FINISHED');
-    yield put({ type: 'SPAWN_ENEMIES' });
+    yield put(EnemiesModule.actions.spawn());
 
     yield take('SPAWN_ENEMIES_FINISHED');
     yield put({ type: 'INITIALIZE_FINISHED' });
