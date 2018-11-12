@@ -1,11 +1,11 @@
-import { combineEpics, ofType } from 'redux-observable';
-import { concatMap } from 'rxjs/operators';
 import * as uuid from 'uuid/v4';
+import { random } from 'lodash';
+import { put, take, all, select } from 'redux-saga/effects';
 
 import spawnEnemies from 'enemies/spawn-enemies';
-import { of } from 'rxjs';
 import { mapSize } from 'constants/map';
 import { Matrix } from 'utils';
+import { Direction } from 'types';
 
 type SpawnEnemiesAction = { type: 'SPAWN_ENEMIES' };
 type SetEnemiesAction = { type: 'SET_ENEMIES', payload: { enemies: any } }; // TODO: better type
@@ -13,7 +13,7 @@ type SetEnemiesAction = { type: 'SET_ENEMIES', payload: { enemies: any } }; // T
 export type EnemiesAction = SpawnEnemiesAction | SetEnemiesAction;
 
 export type EnemiesState = {
-  enemies: {}, // TODO: better type
+  enemies: any, // TODO: better type
 };
 
 type State = {
@@ -37,6 +37,7 @@ export class EnemiesModule {
       enemies.forEach((enemy: any) => matrix.set(enemy.pos.x, enemy.pos.y, enemy));
       return matrix;
     },
+    enemyById: (state: State) => (id: number) => state.enemies.enemies[id],
   };
 
   public static reducer(state: EnemiesState = EnemiesModule.initialState, action: EnemiesAction): EnemiesState {
@@ -56,9 +57,28 @@ export class EnemiesModule {
   };
 }
 
-const spawnEnemiesEpic = (action$: any) => action$.pipe( // TODO: better type.
-  ofType('SPAWN_ENEMIES'),
-  concatMap(() => {
+// TODO: use action creators and constants.
+function* runEnemyAISaga() {
+  while (true) {
+    const action = yield take('RUN_ENEMY_AI');
+    const { id } = action.payload;
+    const r = random(1, 4);
+    let direction: Direction;
+    switch (r) {
+      case 1: direction = 'EAST'; break;
+      case 2: direction = 'NORTH'; break;
+      case 3: direction = 'SOUTH'; break;
+      case 4:
+      default: direction = 'WEST'; break;
+    }
+    yield put({ type: 'ENEMY:MOVE', payload: { id, direction } });
+  }
+}
+
+// TODO: use action creators and constants.
+function* spawnEnemiesSaga() {
+  while (true) {
+    yield take('SPAWN_ENEMIES');
     const enemies = spawnEnemies().reduce(
       (acc, enemy) => {
         const id = uuid();
@@ -69,13 +89,27 @@ const spawnEnemiesEpic = (action$: any) => action$.pipe( // TODO: better type.
       },
       {},
     );
-    return of(
-      EnemiesModule.actions.setEnemies(enemies),
-      { type: 'SPAWN_ENEMIES_FINISHED' },
-    );
-  }),
-);
+    yield put(EnemiesModule.actions.setEnemies(enemies));
+    yield put({ type: 'SPAWN_ENEMIES_FINISHED' });
+  }
+}
 
-export const enemiesEpics = combineEpics(
-  spawnEnemiesEpic,
-);
+function* runAllEnemyAISaga() {
+  while (true) {
+    yield take('RUN_ALL_ENEMY_AI');
+    const enemiesArray = yield select(EnemiesModule.selectors.enemiesAsArray);
+    const actions = enemiesArray.map((enemy: any) => ({ type: 'RUN_ENEMY_AI', payload: { id: enemy.id } }));
+    for (let i = 0; i < actions.length; i++) { // tslint:disable-line
+      yield put(actions[i]);
+    }
+    yield put({ type: 'RUN_ALL_ENEMY_AI_FINISHED' });
+  }
+}
+
+export function* enemiesSaga() {
+  yield all([
+    spawnEnemiesSaga(),
+    runAllEnemyAISaga(),
+    runEnemyAISaga(),
+  ]);
+}

@@ -1,5 +1,4 @@
-import { combineEpics, ofType } from 'redux-observable';
-import { mapTo } from 'rxjs/operators';
+import { put, take } from 'redux-saga/effects';
 
 export type InitializeAction = { type: 'INITIALIZE' };
 
@@ -9,17 +8,19 @@ export class InitializeModule {
   };
 }
 
-export const initializeEpics = combineEpics(
-  (action$: any) => action$.pipe(
-    ofType('INITIALIZE'),
-    mapTo({ type: 'GEN_MAP' }),
-  ),
-  (action$: any) => action$.pipe(
-    ofType('GEN_MAP_FINISHED'),
-    mapTo({ type: 'SPAWN_ENEMIES' }),
-  ),
-  (action$: any) => action$.pipe(
-    ofType('SPAWN_ENEMIES_FINISHED'),
-    mapTo({ type: 'SPAWN_PLAYER' }),
-  ),
-);
+// TODO: use action creators and constants.
+export function* initializeSaga() {
+  while (true) {
+    yield take('INITIALIZE');
+    yield put({ type: 'GEN_MAP' });
+
+    yield take('GEN_MAP_FINISHED');
+    yield put({ type: 'SPAWN_PLAYER' });
+
+    yield take('SPAWN_PLAYER_FINISHED');
+    yield put({ type: 'SPAWN_ENEMIES' });
+
+    yield take('SPAWN_ENEMIES_FINISHED');
+    yield put({ type: 'INITIALIZE_FINISHED' });
+  }
+}

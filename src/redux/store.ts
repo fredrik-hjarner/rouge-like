@@ -1,11 +1,12 @@
 import { createStore, combineReducers, applyMiddleware, compose } from 'redux';
-import { createEpicMiddleware, combineEpics } from 'redux-observable';
+import createSagaMiddleware from 'redux-saga';
+import { all } from 'redux-saga/effects';
 
 import {
-  EnemiesModule, EnemiesState, enemiesEpics,
-  initializeEpics,
-  MapModule, MapState, mapEpics,
-  PlayerModule, PlayerState, playerEpics,
+  EnemiesModule, EnemiesState, enemiesSaga,
+  initializeSaga,
+  MapModule, MapState, mapSaga,
+  PlayerModule, PlayerState, playerSaga,
 } from './modules';
 
 export interface State {
@@ -27,21 +28,23 @@ const rootReducer = combineReducers({
   player: PlayerModule.reducer,
 });
 
-const epicMiddleware = createEpicMiddleware();
+const sagaMiddleware = createSagaMiddleware();
 
-const rootEpic = combineEpics(
-  enemiesEpics,
-  initializeEpics,
-  mapEpics,
-  playerEpics,
-);
+function* rootSaga() {
+  yield all([
+    enemiesSaga(),
+    initializeSaga(),
+    mapSaga(),
+    playerSaga(),
+  ]);
+}
 
 const reducer = rootReducer;
 const store = createStore(
   reducer,
-  composeEnhancers(applyMiddleware(epicMiddleware)),
+  composeEnhancers(applyMiddleware(sagaMiddleware)),
 );
 
-epicMiddleware.run(rootEpic);
+sagaMiddleware.run(rootSaga);
 
 export default store;

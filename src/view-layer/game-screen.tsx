@@ -69,9 +69,9 @@ class GameScreen extends React.Component<Props> {
 }
 
 const mapStateToProps = (state: any) => ({
+  enemies: EnemiesModule.selectors.enemiesAsMatrix(state),
   map: MapModule.selectors.map(state),
   pos: PlayerModule.selectors.position(state),
-  enemies: EnemiesModule.selectors.enemiesAsMatrix(state),
 });
 
 export default connect(mapStateToProps)(GameScreen as any);

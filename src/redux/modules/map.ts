@@ -1,11 +1,9 @@
-import { combineEpics, ofType } from 'redux-observable';
-import { concatMap } from 'rxjs/operators';
+import { put, take } from 'redux-saga/effects';
 
 import { MapTile } from 'types';
 import { Matrix } from 'utils';
 import { mapSize } from 'constants/map';
 import { generateMap } from 'maps/map-generation';
-import { of } from 'rxjs';
 
 type SetMapAction = { type: 'SET_MAP', payload: { map: MapTile[][] } };
 
@@ -46,14 +44,12 @@ export class MapModule {
   };
 }
 
-const genMapEpic = (action$: any) => action$.pipe( // TODO: better type.
-  ofType('GEN_MAP'),
-  concatMap(() => of(
-    MapModule.actions.setMap(generateMap().toTwoDimensionalArray()),
-    { type: 'GEN_MAP_FINISHED' },
-  )),
-);
-
-export const mapEpics = combineEpics(
-  genMapEpic,
-);
+// TODO: use action creators and constants.
+export function* mapSaga() {
+  while (true) {
+    yield take('GEN_MAP');
+    const map = generateMap().toTwoDimensionalArray();
+    yield put(MapModule.actions.setMap(map));
+    yield put({ type: 'GEN_MAP_FINISHED' });
+  }
+}
