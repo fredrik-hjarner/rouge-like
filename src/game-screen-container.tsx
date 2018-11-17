@@ -69,6 +69,11 @@ class GameScreenContainer extends React.Component<Props> {
         event.preventDefault();
         event.stopPropagation();
         break;
+      case 'Numpad5':
+        type === 'keyup' && this.props.move('NOWHERE'); // tslint:disable-line
+        event.preventDefault();
+        event.stopPropagation();
+        break;
     }
   }
 }
