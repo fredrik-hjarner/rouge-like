@@ -16,7 +16,7 @@ type Props = {
   pos: Pos,
   enemies: Matrix,
   tick: number,
-  isItemAtPos: Function,
+  isItemAtPos: (pos: Pos) => Item | undefined,
 };
 
 class GameScreen extends React.Component<Props> {
