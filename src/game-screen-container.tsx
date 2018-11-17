@@ -34,8 +34,18 @@ class GameScreenContainer extends React.Component<Props> {
         event.preventDefault();
         event.stopPropagation();
         break;
+      case 'Numpad7':
+        type === 'keyup' && this.props.move('NORTHWEST'); // tslint:disable-line
+        event.preventDefault();
+        event.stopPropagation();
+        break;
       case 'Numpad8':
         type === 'keyup' && this.props.move('NORTH'); // tslint:disable-line
+        event.preventDefault();
+        event.stopPropagation();
+        break;
+      case 'Numpad9':
+        type === 'keyup' && this.props.move('NORTHEAST'); // tslint:disable-line
         event.preventDefault();
         event.stopPropagation();
         break;
@@ -44,8 +54,18 @@ class GameScreenContainer extends React.Component<Props> {
         event.preventDefault();
         event.stopPropagation();
         break;
+      case 'Numpad3':
+        type === 'keyup' && this.props.move('SOUTHEAST'); // tslint:disable-line
+        event.preventDefault();
+        event.stopPropagation();
+        break;
       case 'Numpad2':
         type === 'keyup' && this.props.move('SOUTH'); // tslint:disable-line
+        event.preventDefault();
+        event.stopPropagation();
+        break;
+      case 'Numpad1':
+        type === 'keyup' && this.props.move('SOUTHWEST'); // tslint:disable-line
         event.preventDefault();
         event.stopPropagation();
         break;

@@ -1,4 +1,4 @@
 export const mapSize = {
-  x: 77,
-  y: 19,
+  x: 68,
+  y: 25,
 };

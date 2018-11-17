@@ -160,7 +160,6 @@ function* runAllEnemyAISaga() {
     yield take('ENEMIES:RUN_AI');
     const enemiesArray = yield select(EnemiesModule.selectors.enemiesAsArray);
     const actions = enemiesArray.map((enemy: any) =>
-      // EnemiesModule.actions.moveEnemy(enemy.id, randomDirection(),
       ({ type: 'ENEMY:RUN_AI', payload: { id: enemy.id } }),
     );
     for (let i = 0; i < actions.length; i++) { // tslint:disable-line
