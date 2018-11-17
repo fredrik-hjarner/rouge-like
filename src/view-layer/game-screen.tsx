@@ -1,5 +1,6 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
+import * as uuid from 'uuid/v4';
 import 'semantic-ui-css/semantic.min.css';
 
 import { PlayerModule, MapModule, EnemiesModule } from 'redux/modules';
@@ -38,8 +39,8 @@ class GameScreen extends React.Component<Props> {
       <pre className="map">
         {this.renderXCoordinates()}
         {grid.map((row, index) => (
-          <div>
-            {row.map((c: string) => <span>{c}</span>)}
+          <div key={uuid()}>
+            {row.map((c: string) => <span key={uuid()}>{c}</span>)}
             {this.renderYCoordinate(index)}
           </div>
         ))}
@@ -51,7 +52,7 @@ class GameScreen extends React.Component<Props> {
     return (
       <div>
         {Array(mapSize.x).fill(0).map((_, index) => index).filter(index => index % 3 === 0)
-          .map(index => <span style={{ color: 'black', backgroundColor: 'white' }}>
+          .map(index => <span key={index} style={{ color: 'black', backgroundColor: 'white' }}>
             {`${index}`.padStart(2, '0').padEnd(3)}
           </span>)
         }
