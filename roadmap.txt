@@ -1,0 +1,13 @@
+functionality to show messages
+  MessageModule
+  PushMessageAction
+  MessageModule.selector.messages
+  draw messages
+enemy can hurt player
+player can die
+generate paths between rooms
+show hp
+show xp counter
+show level
+enemies can go towards player
+range attacks

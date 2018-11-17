@@ -9,6 +9,7 @@ import {
   MapModule, MapState, mapSaga,
   PlayerModule, PlayerState, playerSaga,
   ItemsModule, ItemsState,
+  MessagesModule, MessagesState,
 } from './modules';
 
 export interface State {
@@ -16,6 +17,7 @@ export interface State {
   gameLoop: GameLoopState;
   items: ItemsState;
   map: MapState;
+  messages: MessagesState;
   player: PlayerState;
 }
 
@@ -31,6 +33,7 @@ const rootReducer = combineReducers({
   gameLoop: GameLoopModule.reducer,
   items: ItemsModule.reducer,
   map: MapModule.reducer,
+  messages: MessagesModule.reducer,
   player: PlayerModule.reducer,
 });
 

@@ -9,6 +9,7 @@ import { Pos, Enemy } from 'types';
 import { isWalkable } from 'legal-move';
 import { MapModule } from './map';
 import { ItemsModule } from './items';
+import { MessagesModule } from './messages';
 
 export class EnemiesActionTypes {
   public static readonly ENEMIES_MOVE_ENEMY = 'ENEMIES:MOVE_ENEMY';
@@ -188,6 +189,7 @@ function* damageEnemySaga() {
   while (true) {
     const { payload: { id } } = yield take('ENEMIES:INITIATE_DAMAGE_ENEMY');
     const enemy = yield select(EnemiesModule.selectors.enemyById(id));
+    yield put(MessagesModule.actions.addMessage(`You hit ${enemy.type}!`));
     if (enemy.hp <= 1) {
       yield put(EnemiesModule.actions.killEnemy(id));
       yield put(ItemsModule.actions.spawn('GOBLIN_CORPSE', enemy.pos));
