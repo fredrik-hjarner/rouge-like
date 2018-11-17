@@ -34,7 +34,7 @@ class GameScreen extends React.Component<Props> {
         if (x === this.props.pos.x && y === this.props.pos.y) {
           grid[y][x] = '@';
         } else if (enemy) {
-          grid[y][x] = enemyTypeToJSX(enemy.type);
+          grid[y][x] = enemyTypeToJSX(enemy);
         } else {
           grid[y][x] = mapTileToJSX(map.get(x, y));
         }

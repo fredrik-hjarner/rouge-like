@@ -15,3 +15,10 @@ export type MapTile = 'solid-stone' | 'floor' | 'vertical-wall' | 'horizontal-wa
 export type Direction = 'WEST' | 'NORTH' | 'EAST' | 'SOUTH';
 
 export type EnemyType = 'GOBLIN';
+
+export type Enemy = {
+  id: string,
+  type: string,
+  pos: Pos,
+  hp: number,
+};

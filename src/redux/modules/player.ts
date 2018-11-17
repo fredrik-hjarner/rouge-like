@@ -5,6 +5,7 @@ import { Pos, Direction } from 'types';
 import { isWalkable } from 'legal-move';
 import spawnPlayer from 'player/spawn-player';
 import { applyDirectionToPos } from 'utils';
+import { EnemiesModule } from './enemies';
 
 type SpawnPlayer = { type: 'SPAWN_PLAYER' };
 type MoveAction = { type: 'MOVE', payload: { direction: Direction } };
@@ -57,9 +58,14 @@ function* moveSaga() {
     const { x, y } = yield select(PlayerModule.selectors.position);
     // Check if the move is valid.
     const moveTo = applyDirectionToPos({x, y}, action.payload.direction);
-    const map = yield select(MapModule.selectors.map);
-    if (isWalkable(map, moveTo)) {
-      yield put(PlayerModule.actions.setPos(moveTo));
+    const enemyId = yield select(EnemiesModule.selectors.isEnemyAtPos(moveTo));
+    if (enemyId) {
+      /* const xp = */ yield put(EnemiesModule.actions.damageEnemy(enemyId));
+    } else {
+      const map = yield select(MapModule.selectors.map);
+      if (isWalkable(map, moveTo)) {
+        yield put(PlayerModule.actions.setPos(moveTo));
+      }
     }
     yield put({ type: 'ILLEGAL_MOVE' });
     yield put({ type: 'PLAYER:MOVE-FINISHED' });

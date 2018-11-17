@@ -25,6 +25,6 @@ export default (): EnemiesArray => {
   );
   return randoms.map(r => {
     const pos = cloneDeep(spawnablePositions[r]);
-    return { type: 'GOBLIN', pos };
+    return { type: 'GOBLIN', pos, hp: 2 };
   });
 };
