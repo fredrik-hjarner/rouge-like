@@ -2,12 +2,13 @@ import * as React from 'react';
 import { connect } from 'react-redux';
 import 'semantic-ui-css/semantic.min.css';
 
-import { PlayerModule, MapModule, EnemiesModule, GameLoopModule } from 'redux/modules';
-import { Pos } from 'types';
+import { PlayerModule, MapModule, EnemiesModule, GameLoopModule, ItemsModule } from 'redux/modules';
+import { Pos, Item } from 'types';
 import { mapSize } from 'constants/map';
 import { Matrix } from 'utils';
 import mapTileToJSX from './map-tile-to-jsx';
-import enemyTypeToJSX from './enemy-type-to-jsx';
+import enemyToJSX from './enemy-to-jsx';
+import itemToJSX from './item-to-jsx';
 import 'styles/global';
 
 type Props = {
@@ -15,6 +16,7 @@ type Props = {
   pos: Pos,
   enemies: Matrix,
   tick: number,
+  isItemAtPos: Function,
 };
 
 class GameScreen extends React.Component<Props> {
@@ -25,16 +27,19 @@ class GameScreen extends React.Component<Props> {
   }
 
   public render() {
-    const { map, enemies } = this.props;
+    const { map, enemies, isItemAtPos } = this.props;
     const grid = Array(mapSize.y).fill(0).map(() => Array(mapSize.x).fill('X'));
 
     for (let y = 0; y < mapSize.y; y++) {
       for (let x = 0; x < mapSize.x; x++) {
         const enemy = enemies.get(x, y);
+        const item = isItemAtPos({ x, y });
         if (x === this.props.pos.x && y === this.props.pos.y) {
           grid[y][x] = '@';
         } else if (enemy) {
-          grid[y][x] = enemyTypeToJSX(enemy);
+          grid[y][x] = enemyToJSX(enemy);
+        } else if (item) {
+          grid[y][x] = itemToJSX(item);
         } else {
           grid[y][x] = mapTileToJSX(map.get(x, y));
         }
@@ -77,6 +82,7 @@ class GameScreen extends React.Component<Props> {
 
 const mapStateToProps = (state: any) => ({
   enemies: EnemiesModule.selectors.enemiesAsMatrix(state),
+  isItemAtPos: (pos: Pos): Item | undefined => ItemsModule.selectors.isItemAtPos(pos)(state),
   map: MapModule.selectors.map(state),
   pos: PlayerModule.selectors.position(state),
   tick: GameLoopModule.selectors.tick(state),

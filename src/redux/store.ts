@@ -8,11 +8,13 @@ import {
   GameLoopModule, GameLoopState, gameLoopSaga,
   MapModule, MapState, mapSaga,
   PlayerModule, PlayerState, playerSaga,
+  ItemsModule, ItemsState,
 } from './modules';
 
 export interface State {
   enemies: EnemiesState;
   gameLoop: GameLoopState;
+  items: ItemsState;
   map: MapState;
   player: PlayerState;
 }
@@ -21,12 +23,13 @@ let composeEnhancers = compose;
 
 if (typeof (window as any).__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ === 'function') {
   // maxAge sets the number actions Redux DevTools should store. default 50.
-  composeEnhancers = (window as any).__REDUX_DEVTOOLS_EXTENSION_COMPOSE__({ maxAge: 100 });
+  composeEnhancers = (window as any).__REDUX_DEVTOOLS_EXTENSION_COMPOSE__({ maxAge: 200 });
 }
 
 const rootReducer = combineReducers({
   enemies: EnemiesModule.reducer,
   gameLoop: GameLoopModule.reducer,
+  items: ItemsModule.reducer,
   map: MapModule.reducer,
   player: PlayerModule.reducer,
 });

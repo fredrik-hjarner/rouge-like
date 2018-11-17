@@ -1,5 +1,6 @@
 import * as uuid from 'uuid/v4';
 import { put, take, all, select } from 'redux-saga/effects';
+import { dissocPath } from 'ramda';
 
 import spawnEnemies from 'enemies/spawn-enemies';
 import { mapSize } from 'constants/map';
@@ -7,13 +8,16 @@ import { Matrix, randomDirection, applyDirectionToPos } from 'utils';
 import { Pos, Enemy } from 'types';
 import { isWalkable } from 'legal-move';
 import { MapModule } from './map';
+import { ItemsModule } from './items';
 
 export class EnemiesActionTypes {
   public static readonly ENEMIES_MOVE_ENEMY = 'ENEMIES:MOVE_ENEMY';
   public static readonly ENEMIES_SET_ENEMY_POS = 'ENEMIES:SET_ENEMY_POS';
   public static readonly ENEMIES_SET_ENEMIES = 'ENEMIES:SET_ENEMIES';
   public static readonly ENEMIES_SPAWN = 'ENEMIES:SPAWN';
+  public static readonly ENEMIES_INITIATE_DAMAGE_ENEMY = 'ENEMIES:INITIATE_DAMAGE_ENEMY';
   public static readonly ENEMIES_DAMAGE_ENEMY = 'ENEMIES:DAMAGE_ENEMY';
+  public static readonly ENEMIES_KILL_ENEMY = 'ENEMIES:KILL_ENEMY';
 }
 
 type MoveEnemyAction = { type: 'ENEMIES:MOVE_ENEMY', payload: { id: string } };
@@ -21,13 +25,17 @@ type SetEnemyPosAction = { type: 'ENEMIES:SET_ENEMY_POS', payload: { id: string,
 type SpawnEnemiesAction = { type: 'ENEMIES:SPAWN' };
 type SetEnemiesAction = { type: 'ENEMIES:SET_ENEMIES', payload: { enemies: any } }; // TODO: better type
 type DamageEnemyAction = { type: 'ENEMIES:DAMAGE_ENEMY', payload: { id: string } };
+type InitiateDamageEnemyAction = { type: 'ENEMIES:INITIATE_DAMAGE_ENEMY', payload: { id: string } };
+type KillEnemyAction = { type: 'ENEMIES:KILL_ENEMY', payload: { id: string } };
 
 export type EnemiesAction =
   MoveEnemyAction |
   SetEnemyPosAction |
   SpawnEnemiesAction |
   SetEnemiesAction |
-  DamageEnemyAction;
+  DamageEnemyAction |
+  InitiateDamageEnemyAction |
+  KillEnemyAction;
 
 export type EnemiesState = {
   enemies: any, // TODO: better type
@@ -41,6 +49,9 @@ export class EnemiesModule {
   public static actions = {
     damageEnemy: (id: string): DamageEnemyAction =>
       ({ type: 'ENEMIES:DAMAGE_ENEMY', payload: { id } }),
+    initiateDamageEnemy: (id: string): InitiateDamageEnemyAction =>
+      ({ type: 'ENEMIES:INITIATE_DAMAGE_ENEMY', payload: { id } }),
+    killEnemy: (id: string): KillEnemyAction => ({ type: EnemiesActionTypes.ENEMIES_KILL_ENEMY, payload: { id } }),
     moveEnemy: (id: string): MoveEnemyAction => ({ type: EnemiesActionTypes.ENEMIES_MOVE_ENEMY, payload: { id } }),
     // TODO: better type
     setEnemies: (enemies: any) => ({ type: EnemiesActionTypes.ENEMIES_SET_ENEMIES, payload: { enemies } }),
@@ -60,15 +71,19 @@ export class EnemiesModule {
       return matrix;
     },
     enemyById: (id: number) => (state: State) => state.enemies.enemies[id],
-    isEnemyAtPos: ({ x, y }: Pos) => (state: State): string | undefined => {
+    isEnemyAtPos: ({ x, y }: Pos) => (state: State): Enemy | undefined => {
       const enemyArray: Enemy[] = Object.values(state.enemies.enemies);
       const enemyAtPos: Enemy | undefined = enemyArray.find(({ pos }: Enemy) => pos.x === x && pos.y === y);
-      return enemyAtPos ? enemyAtPos.id : undefined;
+      return enemyAtPos ? enemyAtPos : undefined;
     },
   };
 
   public static reducer(state: EnemiesState = EnemiesModule.initialState, action: EnemiesAction): EnemiesState {
     switch (action.type) {
+      case EnemiesActionTypes.ENEMIES_KILL_ENEMY: {
+        const { id } = action.payload;
+        return dissocPath(['enemies', id], state);
+      }
       case EnemiesActionTypes.ENEMIES_DAMAGE_ENEMY: {
         const { id } = action.payload;
         return {
@@ -169,11 +184,25 @@ function* runAllEnemyAISaga() {
   }
 }
 
+function* damageEnemySaga() {
+  while (true) {
+    const { payload: { id } } = yield take('ENEMIES:INITIATE_DAMAGE_ENEMY');
+    const enemy = yield select(EnemiesModule.selectors.enemyById(id));
+    if (enemy.hp <= 1) {
+      yield put(EnemiesModule.actions.killEnemy(id));
+      yield put(ItemsModule.actions.spawn('GOBLIN_CORPSE', enemy.pos));
+    } else {
+      yield put(EnemiesModule.actions.damageEnemy(id));
+    }
+  }
+}
+
 export function* enemiesSaga() {
   yield all([
     moveEnemySaga(),
     spawnEnemiesSaga(),
     runAllEnemyAISaga(),
     runEnemyAISaga(),
+    damageEnemySaga(),
   ]);
 }

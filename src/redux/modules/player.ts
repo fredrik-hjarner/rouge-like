@@ -58,9 +58,9 @@ function* moveSaga() {
     const { x, y } = yield select(PlayerModule.selectors.position);
     // Check if the move is valid.
     const moveTo = applyDirectionToPos({x, y}, action.payload.direction);
-    const enemyId = yield select(EnemiesModule.selectors.isEnemyAtPos(moveTo));
-    if (enemyId) {
-      /* const xp = */ yield put(EnemiesModule.actions.damageEnemy(enemyId));
+    const enemy = yield select(EnemiesModule.selectors.isEnemyAtPos(moveTo));
+    if (enemy) {
+      /* const xp = */ yield put(EnemiesModule.actions.initiateDamageEnemy(enemy.id));
     } else {
       const map = yield select(MapModule.selectors.map);
       if (isWalkable(map, moveTo)) {

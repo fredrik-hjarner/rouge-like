@@ -23,3 +23,10 @@ export type Enemy = {
   pos: Pos,
   hp: number,
 };
+
+export type ItemType = 'GOBLIN_CORPSE';
+
+export type Item = {
+  type: ItemType,
+  pos: Pos,
+};
