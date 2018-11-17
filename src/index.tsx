@@ -12,7 +12,7 @@ const Root = () => (
   <Provider store={store}>
     <React.StrictMode>
       <GameScreenContainer/>
-      <div style={{ width: '400px' }}>
+      <div style={{ width: '400px', marginBottom: '40px' }}>
         <h3>Story</h3>
         <p>
           The dwarven homelands were attacked by evil forces. To save your home you traveled to the chaos dimension of
@@ -22,7 +22,7 @@ const Root = () => (
         </p>
         <p>You are MechaDwarf. Half machine, half dwarf!</p>
         <h3>Features</h3>
-        <p>Blood/hit effects, batteries, oil</p>
+        <p>Blood/hit effects, batteries, oil, numpad controls</p>
       </div>
     </React.StrictMode>
   </Provider>

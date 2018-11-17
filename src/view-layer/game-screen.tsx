@@ -21,18 +21,10 @@ class GameScreen extends React.Component<Props> {
   public shouldComponentUpdate(nextProps: Props) {
     const prevTick = this.props.tick;
     const nextTick = nextProps.tick;
-    console.log('prevTick:');
-    console.dir(prevTick);
-    console.log('');
-
-    console.log('nextTick:');
-    console.dir(nextTick);
-    console.log('');
     return prevTick !== nextTick;
   }
 
   public render() {
-    console.log('render');
     const { map, enemies } = this.props;
     const grid = Array(mapSize.y).fill(0).map(() => Array(mapSize.x).fill('X'));
 

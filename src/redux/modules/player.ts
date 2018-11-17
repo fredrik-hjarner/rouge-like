@@ -4,6 +4,7 @@ import { MapModule } from 'redux/modules';
 import { Pos, Direction } from 'types';
 import { isWalkable } from 'legal-move';
 import spawnPlayer from 'player/spawn-player';
+import { applyDirectionToPos } from 'utils';
 
 type SpawnPlayer = { type: 'SPAWN_PLAYER' };
 type MoveAction = { type: 'MOVE', payload: { direction: Direction } };
@@ -55,14 +56,7 @@ function* moveSaga() {
     const action = yield take('MOVE');
     const { x, y } = yield select(PlayerModule.selectors.position);
     // Check if the move is valid.
-    let moveTo: Pos;
-    switch (action.payload.direction) {
-      case 'EAST': moveTo = { x: x + 1, y }; break;
-      case 'NORTH': moveTo = { x, y: y - 1 }; break;
-      case 'SOUTH': moveTo = { x, y: y + 1 }; break;
-      case 'WEST':
-      default: moveTo = { x: x - 1, y }; break;
-    }
+    const moveTo = applyDirectionToPos({x, y}, action.payload.direction);
     const map = yield select(MapModule.selectors.map);
     if (isWalkable(map, moveTo)) {
       yield put(PlayerModule.actions.setPos(moveTo));
