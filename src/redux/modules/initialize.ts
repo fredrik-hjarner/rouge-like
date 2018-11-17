@@ -1,6 +1,7 @@
 import { put, take } from 'redux-saga/effects';
 
 import { EnemiesModule } from './enemies';
+import { GameLoopModule } from './game-loop';
 
 export type InitializeAction = { type: 'INITIALIZE' };
 
@@ -24,5 +25,7 @@ export function* initializeSaga() {
 
     yield take('SPAWN_ENEMIES_FINISHED');
     yield put({ type: 'INITIALIZE_FINISHED' });
+
+    yield put(GameLoopModule.actions.tick());
   }
 }

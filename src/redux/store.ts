@@ -5,13 +5,14 @@ import { all } from 'redux-saga/effects';
 import {
   EnemiesModule, EnemiesState, enemiesSaga,
   initializeSaga,
+  GameLoopModule, GameLoopState, gameLoopSaga,
   MapModule, MapState, mapSaga,
   PlayerModule, PlayerState, playerSaga,
-  gameLoopSaga,
 } from './modules';
 
 export interface State {
   enemies: EnemiesState;
+  gameLoop: GameLoopState;
   map: MapState;
   player: PlayerState;
 }
@@ -25,6 +26,7 @@ if (typeof (window as any).__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ === 'function') 
 
 const rootReducer = combineReducers({
   enemies: EnemiesModule.reducer,
+  gameLoop: GameLoopModule.reducer,
   map: MapModule.reducer,
   player: PlayerModule.reducer,
 });

@@ -4,16 +4,19 @@ import { put, take, all, select } from 'redux-saga/effects';
 import spawnEnemies from 'enemies/spawn-enemies';
 import { mapSize } from 'constants/map';
 import { Matrix, randomDirection } from 'utils';
+import { Direction } from 'types';
 
 export class EnemiesActionTypes {
+  public static readonly ENEMIES_MOVE_ENEMY = 'ENEMIES:MOVE_ENEMY';
   public static readonly ENEMIES_SET_ENEMIES = 'ENEMIES:SET_ENEMIES';
   public static readonly ENEMIES_SPAWN = 'ENEMIES:SPAWN';
 }
 
+type MoveEnemyAction = { type: 'ENEMIES:MOVE_ENEMY', payload: { id: string, direction: Direction } }; // TODO: better type
 type SpawnEnemiesAction = { type: 'ENEMIES:SPAWN' };
 type SetEnemiesAction = { type: 'ENEMIES:SET_ENEMIES', payload: { enemies: any } }; // TODO: better type
 
-export type EnemiesAction = SpawnEnemiesAction | SetEnemiesAction;
+export type EnemiesAction = MoveEnemyAction | SpawnEnemiesAction | SetEnemiesAction;
 
 export type EnemiesState = {
   enemies: any, // TODO: better type
@@ -23,9 +26,16 @@ type State = {
   enemies: EnemiesState,
 };
 
+/* type Enemy = {
+  type: string,
+  pos: Pos,
+}; */
+
 export class EnemiesModule {
   public static actions = {
     // TODO: better type
+    moveEnemy: (id: string, direction: Direction): MoveEnemyAction =>
+      ({ type: EnemiesActionTypes.ENEMIES_MOVE_ENEMY, payload: { id, direction } }),
     setEnemies: (enemies: any) => ({ type: EnemiesActionTypes.ENEMIES_SET_ENEMIES, payload: { enemies } }),
     spawn: (): SpawnEnemiesAction => ({ type: EnemiesActionTypes.ENEMIES_SPAWN }),
   };
@@ -45,6 +55,20 @@ export class EnemiesModule {
 
   public static reducer(state: EnemiesState = EnemiesModule.initialState, action: EnemiesAction): EnemiesState {
     switch (action.type) {
+      case EnemiesActionTypes.ENEMIES_MOVE_ENEMY: {
+        const { id /* direction */ } = action.payload;
+        return {
+          ...state,
+          enemies: {
+            ...state.enemies,
+            [id]: {
+              ...state.enemies[id],
+              // pos: state.enemies[id].pos, // TODO: here is where I should change the position
+              pos: { x: 1, y: 1 },
+            },
+          },
+        };
+      }
       case EnemiesActionTypes.ENEMIES_SET_ENEMIES:
         return {
           ...state,
@@ -66,7 +90,7 @@ function* runEnemyAISaga() {
     const action = yield take('ENEMY:RUN_AI');
     const { id } = action.payload;
     const direction = randomDirection();
-    yield put({ type: 'ENEMY:MOVE', payload: { id, direction } });
+    yield put(EnemiesModule.actions.moveEnemy(id, direction));
   }
 }
 
@@ -93,7 +117,10 @@ function* runAllEnemyAISaga() {
   while (true) {
     yield take('ENEMIES:RUN_AI');
     const enemiesArray = yield select(EnemiesModule.selectors.enemiesAsArray);
-    const actions = enemiesArray.map((enemy: any) => ({ type: 'ENEMY:RUN_AI', payload: { id: enemy.id } }));
+    const actions = enemiesArray.map((enemy: any) =>
+      // EnemiesModule.actions.moveEnemy(enemy.id, randomDirection(),
+      ({ type: 'ENEMY:RUN_AI', payload: { id: enemy.id } }),
+    );
     for (let i = 0; i < actions.length; i++) { // tslint:disable-line
       yield put(actions[i]);
     }

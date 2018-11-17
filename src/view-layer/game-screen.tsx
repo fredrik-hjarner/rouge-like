@@ -1,9 +1,8 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
-import * as uuid from 'uuid/v4';
 import 'semantic-ui-css/semantic.min.css';
 
-import { PlayerModule, MapModule, EnemiesModule } from 'redux/modules';
+import { PlayerModule, MapModule, EnemiesModule, GameLoopModule } from 'redux/modules';
 import { Pos } from 'types';
 import { mapSize } from 'constants/map';
 import { Matrix } from 'utils';
@@ -15,10 +14,25 @@ type Props = {
   map: Matrix,
   pos: Pos,
   enemies: Matrix,
+  tick: number,
 };
 
 class GameScreen extends React.Component<Props> {
+  public shouldComponentUpdate(nextProps: Props) {
+    const prevTick = this.props.tick;
+    const nextTick = nextProps.tick;
+    console.log('prevTick:');
+    console.dir(prevTick);
+    console.log('');
+
+    console.log('nextTick:');
+    console.dir(nextTick);
+    console.log('');
+    return prevTick !== nextTick;
+  }
+
   public render() {
+    console.log('render');
     const { map, enemies } = this.props;
     const grid = Array(mapSize.y).fill(0).map(() => Array(mapSize.x).fill('X'));
 
@@ -39,8 +53,8 @@ class GameScreen extends React.Component<Props> {
       <pre className="map">
         {this.renderXCoordinates()}
         {grid.map((row, index) => (
-          <div key={uuid()}>
-            {row.map((c: string) => <span key={uuid()}>{c}</span>)}
+          <div key={index}>
+            {row.map((c: string, i) => <span key={i}>{c}</span>)}
             {this.renderYCoordinate(index)}
           </div>
         ))}
@@ -73,6 +87,7 @@ const mapStateToProps = (state: any) => ({
   enemies: EnemiesModule.selectors.enemiesAsMatrix(state),
   map: MapModule.selectors.map(state),
   pos: PlayerModule.selectors.position(state),
+  tick: GameLoopModule.selectors.tick(state),
 });
 
 export default connect(mapStateToProps)(GameScreen as any);
