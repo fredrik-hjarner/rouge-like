@@ -6,5 +6,7 @@ export default (mapTile: MapTile) => {
     case 'horizontal-wall': return '−';
     case 'vertical-wall': return '|';
     case 'floor': return '.';
+    case 'path': return '#';
+    default: return '£';
   }
 };

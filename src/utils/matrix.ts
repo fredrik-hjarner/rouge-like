@@ -1,4 +1,5 @@
 import { cloneDeep } from 'lodash';
+import { Pos } from 'types';
 
 export class Matrix {
   public static fromTwoDimensionalArray(array: any[][]): Matrix {
@@ -53,6 +54,14 @@ export class Matrix {
         this.matrix[y][x] = value;
       }
     }
+  }
+
+  public forEach(callback: (pos: Pos, value: any) => void): void {
+    this.matrix.forEach(
+      (line, y) => line.forEach(
+        (val, x) => callback({ x, y }, val),
+      ),
+    );
   }
 
   private checkBounds(x: number, y: number) {

@@ -18,7 +18,7 @@ export default (): EnemiesArray => {
     }
   }
 
-  const spawnFactor = 0.10;
+  const spawnFactor = 0.08;
   const toRandomize = Math.round(spawnablePositions.length * spawnFactor);
   const randoms = uniq(
     Array(toRandomize).fill(0).map(() => random(0, spawnablePositions.length - 1)),

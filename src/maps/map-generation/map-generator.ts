@@ -1,13 +1,10 @@
 import { Matrix } from 'utils';
 import { mapSize } from 'constants/map';
 import { RoomGenerator } from './room-generator';
+import { generateBinaryPathsMatrix } from './random-tunnel-generator';
+import { Pos, Rectangle } from 'types';
 
-const roomGenerator = new RoomGenerator();
-
-export const generateMap = () => {
-  const map = Matrix.create(mapSize.x, mapSize.y, 'solid-stone');
-  const rooms = roomGenerator.generate();
-
+function generateRooms(rooms: Rectangle[], map: Matrix) {
   // draw top walls
   rooms.forEach(({ x1, x2, y1 }) => {
     for (let x = x1; x <= x2; x++) {
@@ -44,5 +41,20 @@ export const generateMap = () => {
       }
     }
   });
+}
+
+const roomGenerator = new RoomGenerator();
+
+export const generateMap = () => {
+  const map = Matrix.create(mapSize.x, mapSize.y, 'solid-stone');
+  const rooms = roomGenerator.generate();
+  const binaryPathsMap = generateBinaryPathsMatrix();
+
+  // First draw the paths then let the rooms be drawn over them... I might improve the method later...
+  binaryPathsMap.forEach(({ x, y }: Pos, bit: number) =>
+    bit && map.set(x, y, 'path'),
+  );
+
+  generateRooms(rooms, map);
   return map;
 };
