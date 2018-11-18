@@ -4,32 +4,42 @@ import { RoomGenerator } from './room-generator';
 import { generateBinaryPathsMatrix } from './random-tunnel-generator';
 import { Pos, Rectangle } from 'types';
 
+function drawHorizontalWall(x: number, y: number, map: Matrix) {
+  const tile = map.get(x, y) === 'path' ? 'floor' : 'horizontal-wall';
+  map.set(x, y, tile);
+}
+
+function drawVerticalWall(x: number, y: number, map: Matrix) {
+  const tile = map.get(x, y) === 'path' ? 'floor' : 'vertical-wall';
+  map.set(x, y, tile);
+}
+
 function generateRooms(rooms: Rectangle[], map: Matrix) {
   // draw top walls
   rooms.forEach(({ x1, x2, y1 }) => {
     for (let x = x1; x <= x2; x++) {
-      map.set(x, y1, 'horizontal-wall');
+      drawHorizontalWall(x, y1, map);
     }
   });
 
   // draw bottom walls
   rooms.forEach(({ x1, x2, y2 }) => {
     for (let x = x1; x <= x2; x++) {
-      map.set(x, y2, 'horizontal-wall');
+      drawHorizontalWall(x, y2, map);
     }
   });
 
   // draw left walls
   rooms.forEach(({ x1, y1, y2 }) => {
     for (let y = y1; y <= y2; y++) {
-      map.set(x1, y, 'vertical-wall');
+      drawVerticalWall(x1, y, map);
     }
   });
 
   // draw right walls
   rooms.forEach(({ x2, y1, y2 }) => {
     for (let y = y1; y <= y2; y++) {
-      map.set(x2, y, 'vertical-wall');
+      drawVerticalWall(x2, y, map);
     }
   });
 
