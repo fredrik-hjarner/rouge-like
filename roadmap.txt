@@ -1,8 +1,11 @@
 enemy can hurt player
 player can die
 generate paths between rooms
+  paths make it possible to enter almost all rooms
 show hp
 show xp counter
 show level
 enemies can go towards player
 range attacks
+draw only things that you've seen/explored
+limited visibility
