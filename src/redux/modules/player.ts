@@ -10,11 +10,14 @@ import { EnemiesModule } from './enemies';
 type SpawnPlayer = { type: 'SPAWN_PLAYER' };
 type MoveAction = { type: 'MOVE', payload: { direction: Direction } };
 type SetPosAction = { type: 'SET_POS', payload: { pos: Pos } };
+type DamagePlayerAction = { type: 'PLAYER:DAMAGE_PLAYER' };
 
-export type PlayerAction = SpawnPlayer | MoveAction | SetPosAction;
+export type PlayerAction = SpawnPlayer | MoveAction | SetPosAction | DamagePlayerAction;
 
 export type PlayerState = {
-  x: number, y: number,
+  x: number,
+  y: number,
+  hp: number,
 };
 
 type State = {
@@ -23,12 +26,14 @@ type State = {
 
 export class PlayerModule {
   public static actions = {
+    damagePlayer: (): DamagePlayerAction => ({ type: 'PLAYER:DAMAGE_PLAYER' }),
     move: (direction: Direction): PlayerAction => ({ type: 'MOVE', payload: { direction } }),
     setPos: (pos: Pos): PlayerAction => ({ type: 'SET_POS', payload: { pos } }),
     spawn: (): PlayerAction => ({ type: 'SPAWN_PLAYER' }),
   };
 
   public static selectors = {
+    hp: ({ player }: State): number => player.hp,
     position: (state: State): Pos => ({
       x: state.player.x,
       y: state.player.y,
@@ -39,7 +44,10 @@ export class PlayerModule {
     switch (action.type) {
       case 'SET_POS': {
         const { x, y } = action.payload.pos;
-        return { x, y };
+        return { ...state, x, y };
+      }
+      case 'PLAYER:DAMAGE_PLAYER': {
+        return { ...state, hp: state.hp - 1 };
       }
       default:
         return state;
@@ -47,6 +55,7 @@ export class PlayerModule {
   }
 
   private static initialState: PlayerState = {
+    hp: 10,
     x: 10,
     y: 10,
   };

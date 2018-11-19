@@ -4,7 +4,7 @@ import { dissocPath } from 'ramda';
 
 import spawnEnemies from 'enemies/spawn-enemies';
 import { mapSize } from 'constants/map';
-import { Matrix, applyDirectionToPos, isPosInsideOfMap, directionFromTo } from 'utils';
+import { Matrix, applyDirectionToPos, isPosInsideOfMap, directionFromTo, isSamePos } from 'utils';
 import { Pos, Enemy } from 'types';
 import { isWalkable } from 'legal-move';
 import { MapModule } from './map';
@@ -141,7 +141,11 @@ function* moveEnemySaga() {
       const map = yield select(MapModule.selectors.map);
       const isValidMove = isPosInsideOfMap(pos) && isWalkable(map, pos);
       if (isValidMove) {
-        yield put(EnemiesModule.actions.setEnemyPos(id, pos));
+        if (isSamePos(pos, playerPos)) { // TODO: utility function
+          yield put(PlayerModule.actions.damagePlayer());
+        } else {
+          yield put(EnemiesModule.actions.setEnemyPos(id, pos));
+        }
       }
     }
   }
