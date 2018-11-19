@@ -49,3 +49,33 @@ export function getSiblingDirections(direction: Direction): Direction[] {
 export function randomSiblingDirection(direction: Direction): Direction {
   return getSiblingDirections(direction)[random(0, 2)];
 }
+
+export function directionFromTo(from: Pos, to: Pos): Direction {
+  const dx = to.x - from.x;
+  const dy = to.y - from.y;
+  if (dy === 0) {
+    if (dx === 0) {
+      return 'NOWHERE';
+    } else if (dx < 0) {
+      return 'WEST';
+    } else { // dx > 0
+      return 'EAST';
+    }
+  } else if (dy > 0) { // to is south of from
+    if (dx === 0) {
+      return 'SOUTH';
+    } else if (dx < 0) {
+      return 'SOUTHWEST';
+    } else { // dx > 0
+      return 'SOUTHEAST';
+    }
+  } else { // dy > 0
+    if (dx === 0) {  // to is north of from
+      return 'NORTH';
+    } else if (dx < 0) {
+      return 'NORTHWEST';
+    } else { // dx > 0
+      return 'NORTHEAST';
+    }
+  }
+}

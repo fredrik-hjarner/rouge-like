@@ -4,12 +4,13 @@ import { dissocPath } from 'ramda';
 
 import spawnEnemies from 'enemies/spawn-enemies';
 import { mapSize } from 'constants/map';
-import { Matrix, randomDirection, applyDirectionToPos, isPosInsideOfMap } from 'utils';
+import { Matrix, applyDirectionToPos, isPosInsideOfMap, directionFromTo } from 'utils';
 import { Pos, Enemy } from 'types';
 import { isWalkable } from 'legal-move';
 import { MapModule } from './map';
 import { ItemsModule } from './items';
 import { MessagesModule } from './messages';
+import { PlayerModule } from './player';
 
 export class EnemiesActionTypes {
   public static readonly ENEMIES_MOVE_ENEMY = 'ENEMIES:MOVE_ENEMY';
@@ -133,7 +134,10 @@ function* moveEnemySaga() {
     const enemy = yield select(EnemiesModule.selectors.enemyById(id));
     // TODO: corpses should probably not even get inte this saga!!
     if (enemy.hp !== 0) {
-      const pos = applyDirectionToPos(enemy.pos, randomDirection());
+      // const pos = applyDirectionToPos(enemy.pos, randomDirection());
+      const playerPos = yield select(PlayerModule.selectors.position);
+      const dirToPlayer = directionFromTo(enemy.pos, playerPos);
+      const pos = applyDirectionToPos(enemy.pos, dirToPlayer);
       const map = yield select(MapModule.selectors.map);
       const isValidMove = isPosInsideOfMap(pos) && isWalkable(map, pos);
       if (isValidMove) {

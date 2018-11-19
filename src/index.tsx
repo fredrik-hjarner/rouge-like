@@ -7,6 +7,7 @@ import store from 'redux/store';
 import { InitializeModule } from 'redux/modules';
 import GameScreenContainer from 'game-screen-container';
 import { Messages } from './view-layer';
+import { Status } from './view-layer';
 import 'styles/global';
 
 const Root = () => (
@@ -14,7 +15,10 @@ const Root = () => (
     <React.StrictMode>
       <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr' }}>
         <GameScreenContainer/>
-        <Messages/>
+        <div>
+          <Messages/>
+          <Status/>
+        </div>
       </div>
       <div style={{ width: '400px', marginBottom: '40px' }}>
         <h3>Story</h3>

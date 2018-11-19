@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import 'semantic-ui-css/semantic.min.css';
 
 import { GameLoopModule, MessagesModule } from 'redux/modules';
-import { messagesToLines } from './utils';
+import { statusDimensions } from './consts/status';
 
 type Props = {
   tick: number,
@@ -18,17 +18,23 @@ class Messages extends React.Component<Props> {
   }
 
   public render() {
-    const { messages } = this.props;
-    const lines = messagesToLines(messages);
-
+    const hpString = `hp: ${10}`.padEnd(statusDimensions.x);
+    const xpString = `xp: ${0}`.padEnd(statusDimensions.x);
+    const levelString = `level: ${1}`.padEnd(statusDimensions.x);
     return (
       <pre className="map">
-        <div style={{ backgroundColor: 'white' }}> </div>
-        {lines.map((line, index) => (
-          <div key={index}>
-            {line.split('').map((c: string, i) => <span key={i}>{c}</span>)}
-          </div>
-        ))}
+        <div>
+          {''.padEnd(statusDimensions.x).split('').map(char => <span>{char}</span>)}
+        </div>
+        <div>
+          {Array.from(hpString).map(char => <span>{char}</span>)}
+        </div>
+        <div>
+          {Array.from(xpString).map(char => <span>{char}</span>)}
+        </div>
+        <div>
+          {Array.from(levelString).map(char => <span>{char}</span>)}
+        </div>
       </pre>
     );
   }
