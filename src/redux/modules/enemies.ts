@@ -141,7 +141,7 @@ function* moveEnemySaga() {
       const map = yield select(MapModule.selectors.map);
       const isValidMove = isPosInsideOfMap(pos) && isWalkable(map, pos);
       if (isValidMove) {
-        if (isSamePos(pos, playerPos)) { // TODO: utility function
+        if (isSamePos(pos, playerPos)) {
           yield put(PlayerModule.actions.damagePlayer());
         } else {
           yield put(EnemiesModule.actions.setEnemyPos(id, pos));
