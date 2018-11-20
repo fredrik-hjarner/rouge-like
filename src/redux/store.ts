@@ -10,6 +10,7 @@ import {
   PlayerModule, PlayerState, playerSaga,
   ItemsModule, ItemsState,
   MessagesModule, MessagesState,
+  gameOverSaga,
 } from './modules';
 
 export interface State {
@@ -46,6 +47,7 @@ function* rootSaga() {
     mapSaga(),
     playerSaga(),
     gameLoopSaga(),
+    gameOverSaga(),
   ]);
 }
 

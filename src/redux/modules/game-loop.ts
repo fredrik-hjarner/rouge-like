@@ -1,4 +1,5 @@
-import { put, take } from 'redux-saga/effects';
+import { put, take, race, call } from 'redux-saga/effects';
+import { PlayerActionTypes } from './player';
 
 export class GameLoopActionTypes {
   public static readonly TICK = 'GAME_LOOP:TICK';
@@ -42,7 +43,7 @@ export class GameLoopModule {
   };
 }
 
-export const gameLoopSaga = function*() {
+function* loop() {
   while (true) {
     yield take('PLAYER:MOVE-FINISHED');
     yield put({ type: 'ENEMIES:RUN_AI'});
@@ -50,4 +51,11 @@ export const gameLoopSaga = function*() {
     yield take('ENEMIES:RUN_AI_FINISHED');
     yield put(GameLoopModule.actions.tick());
   }
-};
+}
+
+export function* gameLoopSaga() {
+  yield race({
+    cancel: take(PlayerActionTypes.PLAYER_KILL_PLAYER),
+    posts: call(loop),
+  });
+}

@@ -2,7 +2,7 @@ import * as React from 'react';
 import { connect } from 'react-redux';
 import 'semantic-ui-css/semantic.min.css';
 
-import { GameLoopModule, MessagesModule } from 'redux/modules';
+import { MessagesModule } from 'redux/modules';
 import { messagesToLines } from './utils';
 
 type Props = {
@@ -11,12 +11,6 @@ type Props = {
 };
 
 class Messages extends React.Component<Props> {
-  public shouldComponentUpdate(nextProps: Props) {
-    const prevTick = this.props.tick;
-    const nextTick = nextProps.tick;
-    return prevTick !== nextTick;
-  }
-
   public render() {
     const { messages } = this.props;
     const lines = messagesToLines(messages);
@@ -36,7 +30,6 @@ class Messages extends React.Component<Props> {
 
 const mapStateToProps = (state: any) => ({
   messages: MessagesModule.selectors.messages(state),
-  tick: GameLoopModule.selectors.tick(state),
 });
 
 export default connect(mapStateToProps)(Messages as any);

@@ -5,3 +5,4 @@ export * from './map';
 export * from './game-loop';
 export * from './items';
 export * from './messages';
+export * from './game-over';

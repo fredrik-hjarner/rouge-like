@@ -7,12 +7,25 @@ import spawnPlayer from 'player/spawn-player';
 import { applyDirectionToPos } from 'utils';
 import { EnemiesModule } from './enemies';
 
+// TODO: complete this.
+export class PlayerActionTypes {
+  public static readonly PLAYER_KILL_PLAYER = 'PLAYER:KILL_PLAYER';
+}
+
 type SpawnPlayer = { type: 'SPAWN_PLAYER' };
 type MoveAction = { type: 'MOVE', payload: { direction: Direction } };
 type SetPosAction = { type: 'SET_POS', payload: { pos: Pos } };
 type DamagePlayerAction = { type: 'PLAYER:DAMAGE_PLAYER' };
+type InitDamagePlayerAction = { type: 'PLAYER:INIT_DAMAGE_PLAYER' };
+type KillPlayerAction = { type: 'PLAYER:KILL_PLAYER' };
 
-export type PlayerAction = SpawnPlayer | MoveAction | SetPosAction | DamagePlayerAction;
+export type PlayerAction =
+  SpawnPlayer |
+  MoveAction |
+  SetPosAction |
+  DamagePlayerAction |
+  KillPlayerAction |
+  InitDamagePlayerAction;
 
 export type PlayerState = {
   x: number,
@@ -27,6 +40,8 @@ type State = {
 export class PlayerModule {
   public static actions = {
     damagePlayer: (): DamagePlayerAction => ({ type: 'PLAYER:DAMAGE_PLAYER' }),
+    initDamagePlayer: (): InitDamagePlayerAction => ({ type: 'PLAYER:INIT_DAMAGE_PLAYER' }),
+    killPlayer: (): KillPlayerAction => ({ type: 'PLAYER:KILL_PLAYER' }),
     move: (direction: Direction): PlayerAction => ({ type: 'MOVE', payload: { direction } }),
     setPos: (pos: Pos): PlayerAction => ({ type: 'SET_POS', payload: { pos } }),
     spawn: (): PlayerAction => ({ type: 'SPAWN_PLAYER' }),
@@ -48,6 +63,9 @@ export class PlayerModule {
       }
       case 'PLAYER:DAMAGE_PLAYER': {
         return { ...state, hp: state.hp - 1 };
+      }
+      case 'PLAYER:KILL_PLAYER': {
+        return { ...state, hp: 0 };
       }
       default:
         return state;
@@ -91,9 +109,22 @@ function* spawnSaga() {
   }
 }
 
+function* initDamagePlayerSaga() {
+  while (true) {
+    yield take('PLAYER:INIT_DAMAGE_PLAYER');
+    const hp = yield select(PlayerModule.selectors.hp);
+    if (hp <= 1) {
+      yield put(PlayerModule.actions.killPlayer());
+    } else {
+      yield put(PlayerModule.actions.damagePlayer());
+    }
+  }
+}
+
 export function* playerSaga() {
   yield all([
     spawnSaga(),
     moveSaga(),
+    initDamagePlayerSaga(),
   ]);
 }

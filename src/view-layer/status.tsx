@@ -12,12 +12,6 @@ type Props = {
 };
 
 class Messages extends React.Component<Props> {
-  public shouldComponentUpdate(nextProps: Props) {
-    const prevTick = this.props.tick;
-    const nextTick = nextProps.tick;
-    return prevTick !== nextTick;
-  }
-
   public render() {
     const { tick, hp } = this.props;
 
