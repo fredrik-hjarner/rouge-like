@@ -1,4 +1,5 @@
 import { put, take } from 'redux-saga/effects';
+import { createSelector } from 'reselect';
 
 import { MapTile } from 'types';
 import { Matrix } from 'utils';
@@ -23,8 +24,10 @@ export class MapModule {
   };
 
   public static selectors = {
-    // TODO: do some reselect stuff here to not recreate the array all the time.
-    map: (state: State): Matrix => Matrix.fromTwoDimensionalArray(state.map.map),
+    map: createSelector(
+      (state: State) => state.map.map,
+      (map: MapTile[][]) => Matrix.fromTwoDimensionalArray(map),
+    ),
   };
 
   public static reducer(state: MapState = MapModule.initialState, action: MapAction): MapState {

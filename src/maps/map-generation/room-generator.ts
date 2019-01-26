@@ -75,8 +75,8 @@ export class RoomGenerator {
       }
     }
     // if all's free then create
-    for (let x = startPos.x; x < endPos.x; x++) {
-      for (let y = startPos.y; y < endPos.y; y++) {
+    for (let x = startPos.x; x <= endPos.x; x++) {
+      for (let y = startPos.y; y <= endPos.y; y++) {
         this.grid.set(x, y, 1);
       }
     }
@@ -89,7 +89,11 @@ export class RoomGenerator {
   }
 
   private reset() {
-    this.grid = Matrix.create(mapSize.x, mapSize.y, 0);
+    if (this.grid) {
+      this.grid.setAll(0);
+    } else {
+      this.grid = Matrix.create(mapSize.x, mapSize.y, 0);
+    }
     this.rooms = [];
   }
 }
