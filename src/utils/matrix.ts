@@ -6,7 +6,6 @@ export class Matrix {
     const matrix = new Matrix();
     matrix._height = array.length;
     matrix._width = array[0].length;
-    // matrix.matrix = cloneDeep(array);
     matrix.matrix = [];
     for (let i = 0; i < matrix.height; i++) {
       matrix.matrix.push(Array(matrix.width));
