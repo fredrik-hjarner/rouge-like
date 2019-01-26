@@ -60,7 +60,8 @@ export const generateMap = () => {
   const rooms = roomGenerator.generate();
   const binaryPathsMap = generateBinaryPathsMatrix();
 
-  // First draw the paths then let the rooms be drawn over them... I might improve the method later...
+  // First draw the paths then let the rooms be drawn over them...
+  // I might improve the method later...
   binaryPathsMap.forEach(({ x, y }: Pos, bit: number) =>
     bit && map.set(x, y, 'path'),
   );

@@ -23,10 +23,11 @@ const Root = () => (
       <div style={{ width: '400px', marginBottom: '40px' }}>
         <h3>Story</h3>
         <p>
-          The dwarven homelands were attacked by evil forces. To save your home you traveled to the chaos dimension of
-          Limbo to find the legendary <i>Axe of Doom</i>. You didn't find the axe, instead you got caught in a chaos
-          storm. You were caught in one long month and the chaos energy changed and twisted your form
-          beyond recognition. Now you must return and save homelands before it's too late.
+          The dwarven homelands were attacked by evil forces. To save your home you traveled to the
+          chaos dimension of Limbo to find the legendary <i>Axe of Doom</i>. You didn't find the
+          axe, instead you got caught in a chaos storm. You were caught in one long month and the
+          chaos energy changed and twisted your form beyond recognition. Now you must return and
+          save homelands before it's too late.
         </p>
         <p>You are MechaDwarf. Half machine, half dwarf!</p>
         <h3>Features</h3>

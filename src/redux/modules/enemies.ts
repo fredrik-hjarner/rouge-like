@@ -25,7 +25,8 @@ export class EnemiesActionTypes {
 type MoveEnemyAction = { type: 'ENEMIES:MOVE_ENEMY', payload: { id: string } };
 type SetEnemyPosAction = { type: 'ENEMIES:SET_ENEMY_POS', payload: { id: string, pos: Pos } };
 type SpawnEnemiesAction = { type: 'ENEMIES:SPAWN' };
-type SetEnemiesAction = { type: 'ENEMIES:SET_ENEMIES', payload: { enemies: any } }; // TODO: better type
+// TODO: better type
+type SetEnemiesAction = { type: 'ENEMIES:SET_ENEMIES', payload: { enemies: any } };
 type DamageEnemyAction = { type: 'ENEMIES:DAMAGE_ENEMY', payload: { id: string } };
 type InitiateDamageEnemyAction = { type: 'ENEMIES:INITIATE_DAMAGE_ENEMY', payload: { id: string } };
 type KillEnemyAction = { type: 'ENEMIES:KILL_ENEMY', payload: { id: string } };
@@ -53,10 +54,13 @@ export class EnemiesModule {
       ({ type: 'ENEMIES:DAMAGE_ENEMY', payload: { id } }),
     initiateDamageEnemy: (id: string): InitiateDamageEnemyAction =>
       ({ type: 'ENEMIES:INITIATE_DAMAGE_ENEMY', payload: { id } }),
-    killEnemy: (id: string): KillEnemyAction => ({ type: EnemiesActionTypes.ENEMIES_KILL_ENEMY, payload: { id } }),
-    moveEnemy: (id: string): MoveEnemyAction => ({ type: EnemiesActionTypes.ENEMIES_MOVE_ENEMY, payload: { id } }),
+    killEnemy: (id: string): KillEnemyAction =>
+      ({ type: EnemiesActionTypes.ENEMIES_KILL_ENEMY, payload: { id } }),
+    moveEnemy: (id: string): MoveEnemyAction =>
+      ({ type: EnemiesActionTypes.ENEMIES_MOVE_ENEMY, payload: { id } }),
     // TODO: better type
-    setEnemies: (enemies: any) => ({ type: EnemiesActionTypes.ENEMIES_SET_ENEMIES, payload: { enemies } }),
+    setEnemies: (enemies: any) =>
+      ({ type: EnemiesActionTypes.ENEMIES_SET_ENEMIES, payload: { enemies } }),
     setEnemyPos: (id: string, pos: Pos): SetEnemyPosAction =>
       ({ type: EnemiesActionTypes.ENEMIES_SET_ENEMY_POS, payload: { id, pos } }),
     spawn: (): SpawnEnemiesAction => ({ type: EnemiesActionTypes.ENEMIES_SPAWN }),
@@ -75,12 +79,16 @@ export class EnemiesModule {
     enemyById: (id: number) => (state: State) => state.enemies.enemies[id],
     isEnemyAtPos: ({ x, y }: Pos) => (state: State): Enemy | undefined => {
       const enemyArray: Enemy[] = Object.values(state.enemies.enemies);
-      const enemyAtPos: Enemy | undefined = enemyArray.find(({ pos }: Enemy) => pos.x === x && pos.y === y);
+      const enemyAtPos: Enemy | undefined =
+        enemyArray.find(({ pos }: Enemy) => pos.x === x && pos.y === y);
       return enemyAtPos ? enemyAtPos : undefined;
     },
   };
 
-  public static reducer(state: EnemiesState = EnemiesModule.initialState, action: EnemiesAction): EnemiesState {
+  public static reducer(
+    state: EnemiesState = EnemiesModule.initialState,
+    action: EnemiesAction,
+  ): EnemiesState {
     switch (action.type) {
       case EnemiesActionTypes.ENEMIES_KILL_ENEMY: {
         const { id } = action.payload;

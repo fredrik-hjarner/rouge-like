@@ -24,7 +24,10 @@ export class MessagesModule {
     messages: (state: State): string[] => state.messages.messages,
   };
 
-  public static reducer(state: MessagesState = MessagesModule.initialState, action: MessagesAction): MessagesState {
+  public static reducer(
+    state: MessagesState = MessagesModule.initialState,
+    action: MessagesAction,
+  ): MessagesState {
     switch (action.type) {
       case MessagesActionTypes.ADD_MESSAGE: {
         const { message } = action.payload;

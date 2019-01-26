@@ -26,7 +26,10 @@ export class GameLoopModule {
     tick: (state: State) => state.gameLoop.tick,
   };
 
-  public static reducer(state: GameLoopState = GameLoopModule.initialState, action: GameLoopAction): GameLoopState {
+  public static reducer(
+    state: GameLoopState = GameLoopModule.initialState,
+    action: GameLoopAction,
+  ): GameLoopState {
     switch (action.type) {
       case GameLoopActionTypes.TICK:
         return {

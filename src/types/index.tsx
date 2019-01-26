@@ -13,7 +13,8 @@ export type Rectangle = {
 export type MapTile = 'solid-stone' | 'floor' | 'vertical-wall' | 'horizontal-wall' | 'path';
 
 export type Direction =
-  'WEST' | 'NORTHWEST' | 'NORTH' | 'NORTHEAST' | 'EAST' | 'SOUTHEAST' | 'SOUTH' | 'SOUTHWEST' | 'NOWHERE';
+  'WEST' | 'NORTHWEST' | 'NORTH' | 'NORTHEAST' | 'EAST' | 'SOUTHEAST' | 'SOUTH' | 'SOUTHWEST' |
+  'NOWHERE';
 
 export type EnemyType = 'GOBLIN';
 

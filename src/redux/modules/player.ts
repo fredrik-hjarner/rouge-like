@@ -55,7 +55,10 @@ export class PlayerModule {
     }),
   };
 
-  public static reducer(state: PlayerState = PlayerModule.initialState, action: PlayerAction): PlayerState {
+  public static reducer(
+    state: PlayerState = PlayerModule.initialState,
+    action: PlayerAction,
+  ): PlayerState {
     switch (action.type) {
       case 'SET_POS': {
         const { x, y } = action.payload.pos;

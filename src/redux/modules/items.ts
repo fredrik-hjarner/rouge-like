@@ -32,7 +32,10 @@ export class ItemsModule {
     },
   };
 
-  public static reducer(state: ItemsState = ItemsModule.initialState, action: ItemsAction): ItemsState {
+  public static reducer(
+    state: ItemsState = ItemsModule.initialState,
+    action: ItemsAction,
+  ): ItemsState {
     switch (action.type) {
       case ItemsActionTypes.ITEM_SPAWN: {
         const { pos, type } = action.payload;
